@@ -125,24 +125,24 @@ LabPaperManager/
 
 ## <font>界面展示</font>
 ### <font>登录页</font>
-![](/images/demo/login.png)
+![](./images/demo/login.png)
 
 ### <font>首页（论文列表）</font>
-![](/images/demo/home.png)
+![](./images/demo/home.png)
 
 ### <font>论文详情页</font>
-![](/images/demo/detail.png)
+![](./images/demo/detail.png)
 
 ### <font>上传页面</font>
-![](/images/demo/upload.png)
+![](./images/demo/upload.png)
 
 ### <font>回收站页面</font>
-## ![](/images/demo/recycle_bin.png)
+## ![](./images/demo/recycle_bin.png)
 
 ## 文档说明
-1. [论文管理系统需求文档](/docs/论文管理系统需求文档.md)
-2. [论文管理系统设计文档](/docs/论文管理系统设计文档.md)
-3. [论文管理系统API文档](/docs/论文管理系统API文档.md)
+1. [论文管理系统需求文档](./docs/论文管理系统需求文档.md)
+2. [论文管理系统设计文档](./docs/论文管理系统设计文档.md)
+3. [论文管理系统API文档](./docs/论文管理系统API文档.md)
 
 ## 高保真原型
 [墨刀原型](https://modao.cc/proto/MNGmQdODt4etpl0sMJ4Qml/sharing?view_mode=read_only&screen=rbpV0F5APt8nmfUvD)
