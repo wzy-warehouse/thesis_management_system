@@ -1,5 +1,6 @@
 package com.laboratory.paper;
 
+import cn.dev33.satoken.SaManager;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -23,7 +24,6 @@ public class ThesisManagementSystemApplication {
 
         // 从上下文中获取当前实例
         ThesisManagementSystemApplication app = context.getBean(ThesisManagementSystemApplication.class);
-
         System.out.println("论文管理系统后端服务启动成功！访问地址: http://localhost:" + app.port);
     }
 }
