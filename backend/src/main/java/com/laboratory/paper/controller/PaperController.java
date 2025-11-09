@@ -1,12 +1,12 @@
 package com.laboratory.paper.controller;
 
-import com.laboratory.paper.domain.Paper;
+import com.laboratory.paper.domain.paper.PaperResponse;
 import com.laboratory.paper.entity.ApiResponse;
-import com.laboratory.paper.vo.PaperVo;
+import com.laboratory.paper.vo.paper.PaperVo;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,17 +21,17 @@ public class PaperController extends BaseController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<Paper> queryById(@PathVariable String id) {
-        return ApiResponse.ok(new Paper());
+    public ApiResponse<PaperResponse> queryById(@PathVariable @NotEmpty(message = "id不能为空") String id) {
+        return ApiResponse.ok(new PaperResponse());
     }
 
     @PutMapping("/update")
-    public ApiResponse<Void> update(PaperVo paper) {
-        return ApiResponse.ok();
+    public ApiResponse<Void> update(@RequestBody PaperVo paper) {
+        return ApiResponse.ok("更新成功", null);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ApiResponse<Void> delete(@PathVariable String id) {
-        return ApiResponse.ok();
+    public ApiResponse<Void> deleteById(@PathVariable String id) {
+        return ApiResponse.ok("已移至回收站", null);
     }
 }

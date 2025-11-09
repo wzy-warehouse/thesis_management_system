@@ -1,4 +1,4 @@
-package com.laboratory.paper.vo;
+package com.laboratory.paper.vo.user;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;

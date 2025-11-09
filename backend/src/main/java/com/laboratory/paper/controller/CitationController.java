@@ -1,17 +1,18 @@
 package com.laboratory.paper.controller;
 
+import com.laboratory.paper.domain.citation.GenerateCitationResponse;
 import com.laboratory.paper.entity.ApiResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
+@RequestMapping("/citation")
 public class CitationController extends BaseController{
 
-    @GetMapping("/generator/{paperId}")
-    public ApiResponse<String> generator(
+    @GetMapping("/generate/{paperId}")
+    public ApiResponse<GenerateCitationResponse> generator(
             @PathVariable String paperId,
-            @RequestParam(value = "format", required = false) String format
+            @RequestParam(value = "formatId", required = false) Long formatId
     ) {
-        return ApiResponse.ok("");
+        return ApiResponse.ok(new GenerateCitationResponse());
     }
 }

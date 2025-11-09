@@ -1,9 +1,10 @@
 package com.laboratory.paper.controller;
 
-import com.laboratory.paper.domain.Share;
+import com.laboratory.paper.domain.share.CreateShareResponse;
 import com.laboratory.paper.entity.ApiResponse;
-import com.laboratory.paper.vo.ShareVo;
+import com.laboratory.paper.vo.share.CreateShareVo;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShareController extends BaseController{
 
     @PostMapping("/create")
-    public ApiResponse<Share> create(ShareVo share) {
-        return ApiResponse.ok(new Share());
+    public ApiResponse<CreateShareResponse> create(@RequestBody CreateShareVo share) {
+        return ApiResponse.ok(new CreateShareResponse());
     }
 }
