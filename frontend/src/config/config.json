@@ -1,0 +1,4 @@
+{
+  "backendBaseUrl": "http://localhost:8080",
+  "apiBaseUrl": "/api"
+}

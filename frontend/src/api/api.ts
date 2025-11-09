@@ -1,0 +1,62 @@
+import type { LoginRequest } from '@/types/user/LoginRequest'
+import { changePassword, create as createUser, login } from './user'
+import type { changePasswordRequest } from '@/types/user/ChangePasswordRequest'
+import type { CreateUserRequest } from '@/types/user/CreateUserRequest'
+import type { PaperUploadRequest } from '@/types/paper/PaperUploadRequest'
+import { deleteById, queryById, update, upload } from './paper'
+import type { PaperUpdateRequest } from '@/types/paper/PaperUpdateRequest'
+import type { FolderCreateRequest } from '@/types/folder/FolderCreateRequest'
+import { addPaper, create as createFolder } from './folder'
+import type { AddPaperRequest } from '@/types/folder/AddPaperRequest'
+import type { CreateShareRequest } from '@/types/share/CreateShareRequest'
+import { create as createShare } from './share'
+import { generate } from './citation'
+
+export const $api = {
+  // 用户模块
+  user: {
+    // 登录
+    login: (loginData: LoginRequest) => login(loginData),
+
+    // 修改密码
+    changePassword: (changeDatas: changePasswordRequest) => changePassword(changeDatas),
+
+    // 创建新用户
+    create: (createData: CreateUserRequest) => createUser(createData),
+  },
+
+  // 论文模块
+  paper: {
+    // 上传文件
+    upload: (uploadDatas: PaperUploadRequest) => upload(uploadDatas),
+
+    // 获取论文
+    queryById: (id: number) => queryById(id),
+
+    // 更新论文
+    update: (updateDatas: PaperUpdateRequest) => update(updateDatas),
+
+    // 按照id删除论文
+    deleteById: (id: number) => deleteById(id),
+  },
+
+  // 文件夹模块
+  folder: {
+    // 创建文件夹
+    create: (createData: FolderCreateRequest) => createFolder(createData),
+
+    // 添加论文
+    addPaper: (addPaperData: AddPaperRequest) => addPaper(addPaperData),
+  },
+
+  // 分享模块
+  share: {
+    create: (createData: CreateShareRequest) => createShare(createData),
+  },
+
+  // 参考文献模块
+  citation: {
+    // 生成参考文献
+    generate: (paperId: number, formatId?: number) => generate(paperId, formatId),
+  },
+}

@@ -1,11 +1,9 @@
 <template>
-3233223
+  <RouterView></RouterView>
 </template>
 
 <script setup lang="ts" name="App">
-
+import { RouterView } from 'vue-router'
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
