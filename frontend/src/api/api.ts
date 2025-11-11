@@ -11,6 +11,7 @@ import type { AddPaperRequest } from '@/types/folder/AddPaperRequest'
 import type { CreateShareRequest } from '@/types/share/CreateShareRequest'
 import { create as createShare } from './share'
 import { generate } from './citation'
+import { getSm2PublicKey } from './crypto'
 
 export const $api = {
   // 用户模块
@@ -58,5 +59,11 @@ export const $api = {
   citation: {
     // 生成参考文献
     generate: (paperId: number, formatId?: number) => generate(paperId, formatId),
+  },
+
+  // 加密模块
+  crypto: {
+    // 获取sm2公钥
+    getSm2PublicKey: () => getSm2PublicKey(),
   },
 }

@@ -38,6 +38,15 @@ spring:
       max-request-size: 500MB  # 单次请求总文件最大大小
       enabled: true  # 启用文件上传支持
 
+  # redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      database: 0
+      connect-timeout: 3000ms
+
 # MyBatis 配置
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -75,3 +84,10 @@ logging:
 # 文件服务器
 file-server:
   url: http://localhost:8090
+
+# 安全配置
+safety:
+  sm2:
+    global: 'sm2:keypair:global'  # sm2公钥在redis存储名
+  sm4:
+    private-prefix: 'sm4:key:'    # sm4私钥redis中存储前缀，后续需要拼接token存储
