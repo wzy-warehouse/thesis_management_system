@@ -1,7 +1,7 @@
 <template>
   <div class="login-bg">
     <div class="form-bg">
-      <div class="title">登录</div>
+      <div class="title">论文管理系统</div>
       <div class="form-box">
         <el-form :model="loginForm" :rules="useLoginValidator" ref="loginFormRef">
           <el-form-item prop="username">
@@ -18,6 +18,9 @@
 
           <el-form-item>
             <el-button class="login-btn" type="success" @click="handleLogin">登录系统</el-button>
+            <el-button class="login-btn" type="success" @click="$api.paper.deleteById(1)"
+              >测试系统</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -26,10 +29,15 @@
 </template>
 <script name="UserLogin" setup lang="ts">
 import type { LoginRequest } from '@/types/user/LoginRequest'
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useLoginValidator } from '@/hooks/user/useLoginValidator'
 import type { ElForm } from 'element-plus'
 import { $api } from '@/api/api'
+import { useRoute, useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/useUserStore'
+import { ElMessage } from 'element-plus'
+import config from '@/config/config.json'
+
 // 表单数据
 const loginForm: LoginRequest = reactive({
   username: 'admin',
@@ -37,20 +45,98 @@ const loginForm: LoginRequest = reactive({
   remember: false,
 })
 
-// 表单引用（用于手动触发验证）
+// 表单引用
 const loginFormRef = ref<InstanceType<typeof ElForm>>()
+
+// 路由
+const router = useRouter()
+const route = useRoute()
+
+// 用户pinia
+const userStore = useUserStore()
+
+// 获取跳转路径
+const getRedirectPath = () => {
+  // 从当前登录页的URL中获取redirect参数（需解码，因为路由跳转时可能用了encodeURIComponent）
+  const redirect = route.query.redirect as string
+  const decodedRedirect = redirect ? decodeURIComponent(redirect) : ''
+
+  // 安全校验：只允许内部路径（避免跳转到外部网站）
+  if (decodedRedirect && decodedRedirect.startsWith('/')) {
+    return decodedRedirect
+  }
+  // 无有效redirect参数时，默认跳首页
+  return '/home'
+}
 
 // 登录处理
 const handleLogin = async () => {
-  // 手动触发表单验证
   const isValid = await loginFormRef.value?.validate()
   if (!isValid) return
 
-  // 验证通过，调用后端接口
-  $api.user.login(loginForm).then((res) => {
-    console.log(res)
-  })
+  try {
+    const res = await $api.user.login(loginForm)
+    // 存储登录状态到pinia
+    userStore.token = res.data.token
+    userStore.username = res.data.user.username
+    userStore.id = res.data.user.id
+
+    // 存储"记住密码"状态到localStorage（持久化）
+    if (loginForm.remember) {
+      localStorage.setItem(config.rememberMeKey, 'true')
+      localStorage.setItem(config.rememberMeTokenKey, res.data.token)
+    } else {
+      localStorage.removeItem(config.rememberMeKey)
+      localStorage.removeItem(config.rememberMeTokenKey)
+    }
+
+    router.push(getRedirectPath())
+  } catch (error) {
+    ElMessage.error(`登录失败，${error}`)
+  }
 }
+
+// 页面挂载时执行登录状态判断
+onMounted(async () => {
+  try {
+    // 检查当前是否已登录（sa-token判断）
+    const loginStatusRes = await $api.user.checkLogin()
+    if (loginStatusRes.data) {
+      router.push(getRedirectPath())
+      return
+    }
+
+    // 未登录，检查是否有"记住密码"标记
+    const isRemembered = localStorage.getItem(config.rememberMeKey) === 'true'
+    if (!isRemembered) {
+      return
+    }
+
+    // 有记住密码标记，检查上次登录是否过期
+    const token = localStorage.getItem(config.rememberMeTokenKey)
+    if (!token) {
+      return
+    }
+    const rememberStatusRes = await $api.user.checkRemember(token)
+    if (!rememberStatusRes.data) {
+      localStorage.removeItem(config.rememberMeKey)
+      return
+    }
+
+    // 记住登录未过期，自动恢复登录状态
+    const autoLoginRes = await $api.user.autoLogin(token)
+    if (autoLoginRes.data) {
+      // 更新pinia存储
+      userStore.token = autoLoginRes.data.token
+      userStore.username = autoLoginRes.data.user.username
+      userStore.id = autoLoginRes.data.user.id
+      userStore.isLogin = true
+      router.push(getRedirectPath())
+    }
+  } catch (error) {
+    ElMessage.error(`登录状态检查失败，${error}`)
+  }
+})
 </script>
 <style scoped>
 .login-bg {

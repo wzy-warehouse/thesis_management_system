@@ -1,6 +1,7 @@
 package com.laboratory.paper.wrapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.laboratory.paper.config.Constant;
 import com.laboratory.paper.utils.safety.SM4Utils;
 import jakarta.annotation.Resource;
 import org.springframework.core.MethodParameter;
@@ -24,11 +25,6 @@ public class EncryptResponseAdvice implements ResponseBodyAdvice<Object> {
     @Resource
     private ObjectMapper objectMapper;
 
-    // 无需加密的响应路径（与DecryptFilter中的排除路径保持一致）
-    private static final String[] NO_ENCRYPT_PATHS = {
-            "/crypto/sm2/public-key"
-    };
-
     /**
      * 判断是否需要加密：排除特定路径，其余全部加密
      */
@@ -43,7 +39,7 @@ public class EncryptResponseAdvice implements ResponseBodyAdvice<Object> {
         String requestUri = request.getRequestURI();
 
         // 检查是否为无需加密的路径
-        for (String path : NO_ENCRYPT_PATHS) {
+        for (String path : Constant.NO_ENCRYPT_PATHS) {
             if (requestUri.contains(path)) {
                 return false; // 排除路径，不加密
             }

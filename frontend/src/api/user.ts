@@ -16,6 +16,40 @@ export const login = (loginData: LoginRequest): Promise<Response<LoginResponse>>
 }
 
 /**
+ * 检查登录状态
+ * @returns
+ */
+export const checkLogin = (): Promise<Response<boolean>> => {
+  return httpInstance.get('/user/check-login')
+}
+
+/**
+ * 检查记住登录状态
+ * @param token
+ * @returns
+ */
+export const checkRemember = (token: string): Promise<Response<boolean>> => {
+  return httpInstance.get('/user/check-remember', {
+    params: {
+      token,
+    },
+  })
+}
+
+/**
+ * 自动登录
+ * @param token
+ * @returns
+ */
+export const autoLogin = (token: string): Promise<Response<LoginResponse>> => {
+  return httpInstance.post('/user/auto-login', null, {
+    params: {
+      token,
+    },
+  })
+}
+
+/**
  * 修改密码
  * @param changeDatas 修改密码数据
  * @returns

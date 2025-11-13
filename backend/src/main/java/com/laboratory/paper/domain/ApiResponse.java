@@ -1,4 +1,4 @@
-package com.laboratory.paper.entity;
+package com.laboratory.paper.domain;
 
 import lombok.Data;
 

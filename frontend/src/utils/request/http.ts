@@ -1,7 +1,9 @@
 import axios, { type InternalAxiosRequestConfig, type AxiosResponse } from 'axios'
-import config from '@/config/config.json'
+import configJson from '@/config/config.json'
 import { useUserStore } from '@/stores/useUserStore'
 import { cryptUtils } from '../safety/crypto'
+import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
 
 // 扩展Axios内部配置类型
 declare module 'axios' {
@@ -11,14 +13,8 @@ declare module 'axios' {
   }
 }
 
-// 无需加密的接口路径
-const NO_ENCRYPT_URLS = ['/crypto/sm2/public-key']
-
-// 无需token的接口路径
-const NO_TOKEN_URLS = ['/crypto/sm2/public-key', '/user/login']
-
 const httpInstance = axios.create({
-  baseURL: config.apiBaseUrl,
+  baseURL: configJson.apiBaseUrl,
   timeout: 15000, // 增加超时时间
   withCredentials: true,
 })
@@ -33,52 +29,51 @@ httpInstance.interceptors.request.use(
     config.headers = config.headers || {}
 
     // Token处理
-    const isNoTokenUrl = NO_TOKEN_URLS.some((path) => url?.includes(path))
+    const isNoTokenUrl = configJson.noTokenUrls.some((path) => url?.includes(path))
     if (!isNoTokenUrl && userStore.token) {
       config.headers.Authorization = `Bearer ${userStore.token}`
     }
 
-    // 加密处理
-    const isNoEncryptUrl = NO_ENCRYPT_URLS.some((path) => url?.includes(path))
+    // 加密处理标记
+    const isNoEncryptUrl = configJson.noEncryptUrls.some((path) => url?.includes(path))
     config.isNoEncryptUrl = isNoEncryptUrl
 
     if (!isNoEncryptUrl) {
       try {
+        // 生成SM4密钥并加密，无论是否有业务参数
         const sm4Key = cryptUtils.generateSm4Key()
         config.__sm4Key = sm4Key
-
         const sm4KeyEncrypted = await cryptUtils.sm2Encrypt(sm4Key)
 
-        // GET请求：处理URL参数
-        if (method?.toUpperCase() === 'GET' && config.params) {
-          const encryptedParams = cryptUtils.sm4Encrypt(sm4Key, config.params)
+        // GET请求：处理URL参数（无论是否有params，都要传递sm4KeyEncrypted）
+        if (method?.toUpperCase() === 'GET') {
+          // 有业务参数则加密，无参数则仅传递sm4KeyEncrypted
+          const encryptedParams = config.params ? cryptUtils.sm4Encrypt(sm4Key, config.params) : '' // 无参数时encryptedData可为空
+
           config.params = {
             encryptedData: encryptedParams,
             sm4KeyEncrypted: sm4KeyEncrypted,
           }
         }
 
-        // POST/PUT/DELETE请求：处理请求体
-        if (
-          ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method?.toUpperCase() || '') &&
-          config.data
-        ) {
+        // POST/PUT/DELETE/PATCH请求：处理请求体（无论是否有data，都要传递sm4KeyEncrypted）
+        if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method?.toUpperCase() || '')) {
           if (config.data instanceof FormData) {
+            // 加密表单数据
             const encryptedFormData = cryptUtils.encryptFormData(sm4Key, config.data)
 
-            // 创建新的FormData并添加加密密钥
             const newFormData = new FormData()
-
-            // 复制所有加密后的字段
+            // 复制加密后的业务字段
             for (const [key, value] of encryptedFormData.entries()) {
               newFormData.append(key, value)
             }
-
-            // 添加加密的SM4密钥
+            // 强制添加sm4KeyEncrypted
             newFormData.append('sm4KeyEncrypted', sm4KeyEncrypted)
             config.data = newFormData
           } else {
-            const encryptedData = cryptUtils.sm4Encrypt(sm4Key, config.data)
+            // 有业务数据则加密，无数据则encryptedData为空
+            const encryptedData = config.data ? cryptUtils.sm4Encrypt(sm4Key, config.data) : ''
+
             config.data = {
               encryptedData: encryptedData,
               sm4KeyEncrypted: sm4KeyEncrypted,
@@ -103,39 +98,59 @@ httpInstance.interceptors.request.use(
 httpInstance.interceptors.response.use(
   (response: AxiosResponse) => {
     const { config, data } = response
+    let processedData // 用于存储处理后（原始或解密）的数据
+    const router = useRouter() // 路由
 
-    // 非加密接口或无SM4密钥，直接返回
+    // 处理非加密接口或无密钥的情况
     if (config.isNoEncryptUrl || !config.__sm4Key) {
-      return data
+      processedData = data
+    } else {
+      // 处理加密接口的解密逻辑
+      try {
+        if (typeof data === 'string') {
+          // 解密字符串类型的加密数据
+          processedData = cryptUtils.sm4Decrypt(config.__sm4Key, data)
+        } else if (data && typeof data === 'object') {
+          // 解密对象中包含的加密字段
+          processedData = cryptUtils.sm4Decrypt(config.__sm4Key, data.encryptedData || data)
+        } else {
+          // 非预期数据格式直接使用原始数据
+          processedData = data
+        }
+      } catch (error) {
+        console.error('响应数据解密失败:', error)
+        ElMessage.error('数据解密失败，请重试')
+        return Promise.reject(new Error('数据解密失败，请重试'))
+      }
     }
 
-    // 解密响应数据
-    try {
-      // 如果后端返回的是加密数据字符串
-      if (typeof data === 'string') {
-        return cryptUtils.sm4Decrypt(config.__sm4Key, data)
-      }
-
-      // 如果后端返回的是对象，检查是否有加密字段
-      if (data && typeof data === 'object') {
-        // 这里可以根据后端返回格式调整
-        return cryptUtils.sm4Decrypt(config.__sm4Key, data.encryptedData || data)
-      }
-
-      return data
-    } catch (error) {
-      console.error('响应数据解密失败:', error)
-      return Promise.reject(new Error('数据解密失败，请重试'))
+    // 统一判断处理后的数据状态
+    if (processedData?.code === 200) {
+      return processedData
+    } else if (processedData?.code == 401) {
+      router.push(`/login?redirect=${router.currentRoute.value.fullPath}`)
+      ElMessage.error('请先登录')
+    } else {
+      // code非200时提示错误信息
+      const errorMsg = processedData?.message || '操作失败，请稍后重试'
+      ElMessage.error(errorMsg)
+      return Promise.reject(new Error(errorMsg))
     }
   },
   (error) => {
     console.error('响应拦截器错误:', error)
+    let errorMsg = '请求失败，请稍后重试'
 
-    // 处理解密相关的错误
+    // 处理服务器解密相关错误
     if (error.response?.status === 500 && error.response?.data?.msg?.includes('解密')) {
-      return Promise.reject(new Error('服务器解密失败，请检查密钥配置'))
+      errorMsg = '服务器解密失败，请检查密钥配置'
+    } else if (error.message) {
+      // 使用错误对象自带的消息
+      errorMsg = error.message
     }
 
+    // 错误提示
+    ElMessage.error(errorMsg)
     return Promise.reject(error)
   },
 )

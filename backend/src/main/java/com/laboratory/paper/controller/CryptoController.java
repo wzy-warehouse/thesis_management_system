@@ -1,6 +1,6 @@
 package com.laboratory.paper.controller;
 
-import com.laboratory.paper.entity.ApiResponse;
+import com.laboratory.paper.domain.ApiResponse;
 import com.laboratory.paper.utils.safety.SM2Utils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;

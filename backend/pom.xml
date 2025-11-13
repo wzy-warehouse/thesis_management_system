@@ -21,6 +21,7 @@
         <openapi.version>2.8.13</openapi.version>
         <lombok.version>1.18.42</lombok.version>
         <sa-token.version>1.44.0</sa-token.version>
+        <sa-token-redis-template.version>1.44.0</sa-token-redis-template.version>
         <bcprov-jdk15to18.version>1.82</bcprov-jdk15to18.version>
         <fastjson.version>2.0.60</fastjson.version>
     </properties>
@@ -99,6 +100,19 @@
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-spring-boot3-starter</artifactId>
             <version>${sa-token.version}</version>
+        </dependency>
+
+        <!-- Sa-Token 整合 RedisTemplate -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redis-template</artifactId>
+            <version>${sa-token-redis-template.version}</version>
+        </dependency>
+
+        <!-- 提供 Redis 连接池 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
         </dependency>
 
         <!-- 国密算法 -->

@@ -1,7 +1,7 @@
 package com.laboratory.paper.controller;
 
 import com.laboratory.paper.domain.share.CreateShareResponse;
-import com.laboratory.paper.entity.ApiResponse;
+import com.laboratory.paper.domain.ApiResponse;
 import com.laboratory.paper.vo.share.CreateShareVo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

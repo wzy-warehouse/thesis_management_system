@@ -1,5 +1,12 @@
 import type { LoginRequest } from '@/types/user/LoginRequest'
-import { changePassword, create as createUser, login } from './user'
+import {
+  autoLogin,
+  changePassword,
+  checkLogin,
+  checkRemember,
+  create as createUser,
+  login,
+} from './user'
 import type { changePasswordRequest } from '@/types/user/ChangePasswordRequest'
 import type { CreateUserRequest } from '@/types/user/CreateUserRequest'
 import type { PaperUploadRequest } from '@/types/paper/PaperUploadRequest'
@@ -18,6 +25,15 @@ export const $api = {
   user: {
     // 登录
     login: (loginData: LoginRequest) => login(loginData),
+
+    // 检查登录状态
+    checkLogin: () => checkLogin(),
+
+    // 检查记住登录状态
+    checkRemember: (token: string) => checkRemember(token),
+
+    // 自动登录
+    autoLogin: (token: string) => autoLogin(token),
 
     // 修改密码
     changePassword: (changeDatas: changePasswordRequest) => changePassword(changeDatas),

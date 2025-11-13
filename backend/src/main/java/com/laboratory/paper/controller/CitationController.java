@@ -1,7 +1,7 @@
 package com.laboratory.paper.controller;
 
 import com.laboratory.paper.domain.citation.GenerateCitationResponse;
-import com.laboratory.paper.entity.ApiResponse;
+import com.laboratory.paper.domain.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

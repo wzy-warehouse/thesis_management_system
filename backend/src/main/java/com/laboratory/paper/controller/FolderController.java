@@ -1,7 +1,7 @@
 package com.laboratory.paper.controller;
 
 import com.laboratory.paper.domain.folder.CreateFolderResponse;
-import com.laboratory.paper.entity.ApiResponse;
+import com.laboratory.paper.domain.ApiResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

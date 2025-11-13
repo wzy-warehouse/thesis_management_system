@@ -89,5 +89,10 @@ file-server:
 safety:
   sm2:
     global: 'sm2:keypair:global'  # sm2公钥在redis存储名
-  sm4:
-    private-prefix: 'sm4:key:'    # sm4私钥redis中存储前缀，后续需要拼接token存储
+
+# 登录相关配置
+login:
+  remember:
+    redis:
+      key:
+        prefix: 'login:remember:'  # 记住密码在redis中前缀

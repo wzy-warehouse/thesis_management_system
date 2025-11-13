@@ -1,6 +1,6 @@
 package com.laboratory.paper.controller;
 
-import com.laboratory.paper.entity.ApiResponse;
+import com.laboratory.paper.domain.ApiResponse;
 import com.laboratory.paper.service.ex.ServiceException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 

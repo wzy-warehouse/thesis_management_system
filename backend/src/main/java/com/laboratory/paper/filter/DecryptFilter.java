@@ -2,6 +2,7 @@ package com.laboratory.paper.filter;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
+import com.laboratory.paper.config.Constant;
 import com.laboratory.paper.utils.safety.SM2Utils;
 import com.laboratory.paper.utils.safety.SM4Utils;
 import com.laboratory.paper.wrapper.Sm4KeyHolder;
@@ -35,11 +36,6 @@ public class DecryptFilter implements Filter {
     @Value("${safety.sm2.global}")
     private String sm2KeyPairRedisKey;
 
-    // 无需解密的接口路径
-    private static final String[] NO_DECRYPT_PATHS = {
-            "/crypto/sm2/public-key"
-    };
-
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
             throws IOException, ServletException {
@@ -58,22 +54,25 @@ public class DecryptFilter implements Filter {
             String encryptedData = encryptedParams[0];
             String sm4KeyEncrypted = encryptedParams[1];
 
-            // 校验加密参数
-            if (!StringUtils.hasText(encryptedData) || !StringUtils.hasText(sm4KeyEncrypted)) {
-                throw new IllegalArgumentException("加密参数缺失（encryptedData或sm4KeyEncrypted）");
+            // 校验加密参数（仅校验sm4KeyEncrypted，确保必传）
+            if (!StringUtils.hasText(sm4KeyEncrypted)) {
+                throw new IllegalArgumentException("加密参数缺失（sm4KeyEncrypted）");
             }
 
             // 解密SM4密钥
             String sm2PrivateKey = getSm2PrivateKey();
             String sm4Key = SM2Utils.decrypt(sm2PrivateKey, sm4KeyEncrypted);
 
-            // 根据会话存储SM4密钥
+            // 存储SM4密钥
             Sm4KeyHolder.setSm4Key(sm4Key);
 
-            // 解密请求数据
-            String decryptedData = SM4Utils.decrypt(sm4Key, encryptedData);
+            // 仅当encryptedData有实际内容时才解密（排除null和空字符串）
+            String decryptedData = null;
+            if (StringUtils.hasText(encryptedData)) {
+                decryptedData = SM4Utils.decrypt(sm4Key, encryptedData);
+            }
 
-            // 包装解密后的请求
+            // 包装解密后的请求（兼容空数据场景）
             DecryptRequestWrapper wrappedRequest = wrapDecryptedRequest(request, decryptedData);
             chain.doFilter(wrappedRequest, servletResponse);
 
@@ -86,7 +85,7 @@ public class DecryptFilter implements Filter {
      * 检查是否为无需解密的路径
      */
     private boolean isNoDecryptPath(String requestUri) {
-        for (String path : NO_DECRYPT_PATHS) {
+        for (String path : Constant.NO_DECRYPT_PATHS) {
             if (requestUri.contains(path)) {
                 return true;
             }
@@ -104,7 +103,7 @@ public class DecryptFilter implements Filter {
         String contentType = request.getContentType();
 
         if ("GET".equalsIgnoreCase(method)) {
-            // GET请求从Query参数提取
+            // GET请求从Query参数提取（允许参数为空字符串）
             encryptedData = request.getParameter("encryptedData");
             sm4KeyEncrypted = request.getParameter("sm4KeyEncrypted");
         } else {
@@ -115,9 +114,12 @@ public class DecryptFilter implements Filter {
 
             if (contentType.contains("application/json")) {
                 String jsonBody = readRequestBody(request);
-                Map<String, Object> bodyMap = JSON.parseObject(jsonBody, new TypeReference<Map<String, Object>>() {});
-                encryptedData = (String) bodyMap.get("encryptedData");
-                sm4KeyEncrypted = (String) bodyMap.get("sm4KeyEncrypted");
+                // 空JSON体处理（避免解析空字符串报错）
+                if (StringUtils.hasText(jsonBody)) {
+                    Map<String, Object> bodyMap = JSON.parseObject(jsonBody, new TypeReference<Map<String, Object>>() {});
+                    encryptedData = (String) bodyMap.get("encryptedData");
+                    sm4KeyEncrypted = (String) bodyMap.get("sm4KeyEncrypted");
+                }
             } else if (contentType.contains("multipart/form-data")) {
                 // FormData从表单参数提取
                 encryptedData = request.getParameter("encryptedData");
@@ -146,26 +148,32 @@ public class DecryptFilter implements Filter {
     }
 
     /**
-     * 包装解密后的请求
+     * 包装解密后的请求（兼容空数据）
      */
     private DecryptRequestWrapper wrapDecryptedRequest(HttpServletRequest request, String decryptedData) {
         if ("GET".equalsIgnoreCase(request.getMethod())) {
-            // GET请求：解析为参数Map
+            // GET请求：解析为参数Map（空数据返回空Map）
             Map<String, String[]> originalParams = parseGetParams(decryptedData);
             DecryptRequestWrapper wrapper = new DecryptRequestWrapper(request, new byte[0]);
             wrapper.setDecryptedParams(originalParams);
             return wrapper;
         } else {
-            // POST请求：作为新的Body
-            byte[] decryptedBody = decryptedData.getBytes(StandardCharsets.UTF_8);
+            // POST请求：空数据转换为空字节数组（避免null）
+            byte[] decryptedBody = StringUtils.hasText(decryptedData)
+                    ? decryptedData.getBytes(StandardCharsets.UTF_8)
+                    : new byte[0];
             return new DecryptRequestWrapper(request, decryptedBody);
         }
     }
 
     /**
-     * 解析GET参数
+     * 解析GET参数（兼容空数据）
      */
     private Map<String, String[]> parseGetParams(String decryptedData) {
+        // 空数据直接返回空Map，避免JSON解析报错
+        if (!StringUtils.hasText(decryptedData)) {
+            return new HashMap<>();
+        }
         Map<String, Object> paramMap = JSON.parseObject(decryptedData);
         Map<String, String[]> result = new HashMap<>(paramMap.size());
 

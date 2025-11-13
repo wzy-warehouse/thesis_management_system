@@ -1,7 +1,7 @@
 package com.laboratory.paper.controller;
 
 import com.laboratory.paper.domain.paper.PaperResponse;
-import com.laboratory.paper.entity.ApiResponse;
+import com.laboratory.paper.domain.ApiResponse;
 import com.laboratory.paper.vo.paper.PaperVo;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.web.bind.annotation.*;
