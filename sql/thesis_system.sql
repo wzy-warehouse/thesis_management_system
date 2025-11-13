@@ -11,7 +11,7 @@
  Target Server Version : 80043 (8.0.43)
  File Encoding         : 65001
 
- Date: 24/10/2025 19:36:25
+ Date: 13/11/2025 21:45:47
 */
 
 SET NAMES utf8mb4;
@@ -46,7 +46,7 @@ CREATE TABLE `folder`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_folder_create_user`(`create_user` ASC) USING BTREE,
   CONSTRAINT `fk_folder_create_user` FOREIGN KEY (`create_user`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文件夹表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文件夹表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of folder
@@ -77,7 +77,7 @@ CREATE TABLE `paper`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_paper_create_user`(`create_user` ASC) USING BTREE,
   CONSTRAINT `fk_paper_create_user` FOREIGN KEY (`create_user`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '论文表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '论文表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of paper
@@ -96,7 +96,7 @@ CREATE TABLE `paper_folder`  (
   INDEX `fk_paper_folder_folder`(`folder_id` ASC) USING BTREE,
   CONSTRAINT `fk_paper_folder_folder` FOREIGN KEY (`folder_id`) REFERENCES `folder` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_paper_folder_paper` FOREIGN KEY (`paper_id`) REFERENCES `paper` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '论文-文件夹关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '论文-文件夹关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of paper_folder
@@ -116,7 +116,7 @@ CREATE TABLE `recycle_bin`  (
   INDEX `fk_recycle_bin_user`(`delete_user` ASC) USING BTREE,
   CONSTRAINT `fk_recycle_bin_paper` FOREIGN KEY (`paper_id`) REFERENCES `paper` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_recycle_bin_user` FOREIGN KEY (`delete_user`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '回收站表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '回收站表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of recycle_bin
@@ -137,7 +137,7 @@ CREATE TABLE `share`  (
   UNIQUE INDEX `uk_share_token`(`share_token` ASC) USING BTREE,
   INDEX `fk_share_paper`(`paper_id` ASC) USING BTREE,
   CONSTRAINT `fk_share_paper` FOREIGN KEY (`paper_id`) REFERENCES `paper` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '分享表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '分享表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of share
@@ -150,7 +150,8 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键（自增）',
   `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户名（唯一）',
-  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '加密密码（BCrypt）',
+  `salt` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '盐值',
+  `password` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '加密密码（BCrypt）',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
@@ -160,6 +161,6 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', '$2a$10$zzmowtAgnv6y34QICOLswuH9HOIVlKQ4Fvvu/PHOKrzY5CkJA3HFC', '2025-10-24 19:35:43', '2025-10-24 19:35:51');
+INSERT INTO `user` VALUES (1, 'admin', '6498ff81e1dc6b82b698d60a39a9eb75030d9bb1a450113cd3727af4a3a6d12c', 'f76b6bda266dbf14a2843b8442f0f2b67ae0424d2ef158f57850f7a1ffa47159', '2025-10-24 19:35:43', '2025-10-24 19:35:51');
 
 SET FOREIGN_KEY_CHECKS = 1;
