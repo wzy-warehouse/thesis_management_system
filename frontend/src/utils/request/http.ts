@@ -3,7 +3,7 @@ import configJson from '@/config/config.json'
 import { useUserStore } from '@/stores/useUserStore'
 import { cryptUtils } from '../safety/crypto'
 import { ElMessage } from 'element-plus'
-import { useRouter } from 'vue-router'
+import router from '@/router'
 
 // 扩展Axios内部配置类型
 declare module 'axios' {
@@ -99,7 +99,6 @@ httpInstance.interceptors.response.use(
   (response: AxiosResponse) => {
     const { config, data } = response
     let processedData // 用于存储处理后（原始或解密）的数据
-    const router = useRouter() // 路由
 
     // 处理非加密接口或无密钥的情况
     if (config.isNoEncryptUrl || !config.__sm4Key) {

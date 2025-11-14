@@ -67,7 +67,7 @@ npm run dev
 
 ### 访问系统
 + 前端地址：[http://localhost:5173](http://localhost:5173/)
-+ 初始账号：admin 初始密码：123456
++ 初始账号：admin 初始密码：admin@123
 
 ## 目录结构
 ```plain
