@@ -2,10 +2,24 @@ import type { AddPaperRequest } from '@/types/folder/AddPaperRequest'
 import type { FolderCreateRequest } from '@/types/folder/FolderCreateRequest'
 import type { FolderCreateResponse } from '@/types/folder/FolderCreateResponse'
 import type { Response } from '@/types/Response'
+import type { Tree } from '@/types/tree/TreeDefine'
 import httpInstance from '@/utils/request/http'
 
 /**
- * 创建文件见
+ * 查询文件夹
+ * @param parentId
+ * @returns
+ */
+export const queryFolder = (parentId: number): Promise<Response<Tree[]>> => {
+  return httpInstance.post('/folder/query-folder', null, {
+    params: {
+      parentId,
+    },
+  })
+}
+
+/**
+ * 创建文件夹
  * @param createData
  * @returns
  */

@@ -10,15 +10,16 @@ import {
 import type { changePasswordRequest } from '@/types/user/ChangePasswordRequest'
 import type { CreateUserRequest } from '@/types/user/CreateUserRequest'
 import type { PaperUploadRequest } from '@/types/paper/PaperUploadRequest'
-import { deleteById, queryById, update, upload } from './paper'
+import { deleteById, queryById, queryPaperBaseInfo, searchList, update, upload } from './paper'
 import type { PaperUpdateRequest } from '@/types/paper/PaperUpdateRequest'
 import type { FolderCreateRequest } from '@/types/folder/FolderCreateRequest'
-import { addPaper, create as createFolder } from './folder'
+import { addPaper, create as createFolder, queryFolder } from './folder'
 import type { AddPaperRequest } from '@/types/folder/AddPaperRequest'
 import type { CreateShareRequest } from '@/types/share/CreateShareRequest'
 import { create as createShare } from './share'
 import { generate } from './citation'
 import { getSm2PublicKey } from './crypto'
+import type { QueryPaper } from '@/types/paper/QueryPaper'
 
 export const $api = {
   // 用户模块
@@ -44,6 +45,11 @@ export const $api = {
 
   // 论文模块
   paper: {
+    // 按照关键字搜索论文
+    searchList: (folderId: number, keyword: string) => searchList(folderId, keyword),
+
+    queryPaperBaseInfo: (paperDatas: QueryPaper) => queryPaperBaseInfo(paperDatas),
+
     // 上传文件
     upload: (uploadDatas: PaperUploadRequest) => upload(uploadDatas),
 
@@ -59,6 +65,9 @@ export const $api = {
 
   // 文件夹模块
   folder: {
+    // 获取文件夹
+    queryFolder: (parentId: number) => queryFolder(parentId),
+
     // 创建文件夹
     create: (createData: FolderCreateRequest) => createFolder(createData),
 

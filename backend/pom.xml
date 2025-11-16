@@ -135,6 +135,12 @@
             <version>${fastjson.version}</version>
         </dependency>
 
+        <!-- 测试框架 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope> <!-- 仅在测试环境生效 -->
+        </dependency>
     </dependencies>
 
     <build>

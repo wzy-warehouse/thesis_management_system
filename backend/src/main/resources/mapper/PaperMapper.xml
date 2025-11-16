@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.laboratory.paper.mapper.PaperMapper">
+    <resultMap id="PaperMap" type="com.laboratory.paper.entity.Paper">
+        <id column="id" property="id" javaType="java.lang.Long" />
+        <result column="publish_time" property="publishTime" javaType="java.time.LocalDate" />
+        <result column="journal_type" property="journalType" />
+        <result column="research_direction" property="researchDirection" />
+        <result column="file_path" property="filePath" />
+        <result column="file_size" property="fileSize" javaType="java.lang.Long" />
+        <result column="file_hash" property="fileHash" />
+        <result column="create_user" property="createUser" javaType="java.lang.Long"/>
+        <result column="create_time" property="createTime" javaType="java.time.LocalDateTime" />
+        <result column="update_time" property="updateTime" javaType="java.time.LocalDateTime" />
+        <result column="is_deleted" property="isDeleted" javaType="java.lang.Short" />
+    </resultMap>
+
+    <!-- 按文件夹查询 -->
+    <select id="searchPaperByFolder" resultType="com.laboratory.paper.domain.paper.PaperListItem">
+        SELECT p.`id`, p.`title` AS `value`
+        FROM paper AS p
+        INNER JOIN paper_folder AS f ON f.paper_id = p.id
+        <where>
+            f.folder_id = #{folderId}
+            <if test='keyword != null and keyword != ""'>
+                AND MATCH(p.author, p.keywords, p.title) AGAINST(#{keyword} IN BOOLEAN MODE)
+            </if>
+        </where>
+        GROUP BY p.id
+        ORDER BY p.id
+    </select>
+
+    <!-- 查询所有论文 -->
+    <select id="searchAllPapers" resultType="com.laboratory.paper.domain.paper.PaperListItem">
+        SELECT p.`id`, p.`title` AS `value`
+        FROM paper AS p
+        <where>
+            <if test='keyword != null and keyword != ""'>
+                MATCH(p.author, p.keywords, p.title) AGAINST(#{keyword} IN BOOLEAN MODE)
+            </if>
+        </where>
+        GROUP BY p.id
+        ORDER BY p.id
+    </select>
+
+    <!-- 查询所有论文基本信息 -->
+    <select id="queryAllPapersBaseInfo" resultMap="PaperMap">
+        <!-- 用bind标签计算偏移量：offset = (pageNum - 1) * pageSize -->
+        <bind
+            name="offset"
+            value="(pageNum - 1) * pageSize"
+        />
+        SELECT
+        p.id,
+        p.title,
+        p.author,
+        p.publish_time,
+        p.journal,
+        p.journal_type,
+        p.research_direction,
+        p.innovation,
+        p.deficiency,
+        p.keywords,
+        p.create_time
+        FROM paper_folder AS f
+        INNER JOIN paper AS p
+        ON f.paper_id = p.id
+        <where>
+            f.folder_id = #{folderId}
+        </where>
+        ORDER BY p.id
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <!-- 查询所有论文基本信息对应总页数 -->
+    <select id="queryAllPapersBaseInfoPages" resultType="int">
+        SELECT CEIL(COUNT(*) / #{pageSize}) FROM
+        (SELECT p.id FROM paper_folder AS f
+            INNER JOIN paper AS p
+            ON f.paper_id = p.id
+            <where>
+                f.folder_id = #{folderId}
+            </where>
+        )t
+    </select>
+
+    <select id="queryPapersById" resultMap="PaperMap">
+        SELECT
+        p.id,
+        p.title,
+        p.author,
+        p.publish_time,
+        p.journal,
+        p.journal_type,
+        p.research_direction,
+        p.innovation,
+        p.deficiency,
+        p.keywords,
+        p.create_time
+        FROM paper AS p
+        <where>
+            p.id = #{paperId}
+        </where>
+    </select>
+</mapper>

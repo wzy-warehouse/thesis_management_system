@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.laboratory.paper.mapper.FolderMapper">
+    <!-- 定义map -->
+    <resultMap id="FolderMap" type="com.laboratory.paper.entity.Folder">
+        <id column="id" javaType="java.lang.Long" property="id"/>
+        <result column="parent_id" property="parentId" javaType="java.lang.Long"/>
+        <result column="create_user" property="createUser" javaType="java.lang.Long"/>
+        <result column="create_time" property="createTime" javaType="java.time.LocalDateTime"/>
+
+        <result column="has_children" property="hasChildren" javaType="java.lang.Boolean"/>
+    </resultMap>
+
+    <resultMap id="QueryFolderResponseMap" type="com.laboratory.paper.domain.folder.QueryFolderResponse">
+        <id column="id" javaType="java.lang.Long" property="id"/>
+        <result column="name" property="label" javaType="java.lang.String"/>
+        <result column="has_children" property="hasChildren" javaType="java.lang.Boolean"/>
+    </resultMap>
+    
+    <!-- 根据父id获取目录 -->
+    <select id="getFoldersByParentId" resultMap="QueryFolderResponseMap">
+        SELECT
+        f.id,
+        f.name,
+        CASE
+        WHEN EXISTS (SELECT 1 FROM folder WHERE parent_id = f.id)
+        THEN TRUE
+        ELSE FALSE
+        END AS has_children
+        FROM folder f
+        <where>
+            f.parent_id = #{parentId}
+        </where>
+        ORDER BY f.id
+    </select>
+</mapper>

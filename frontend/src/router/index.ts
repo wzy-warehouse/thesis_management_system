@@ -22,6 +22,18 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: () => import('@/views/home/HomePage.vue'),
+      children: [
+        {
+          path: '/paper-info',
+          name: 'paper-info',
+          component: () => import('@/views/home/paper-info/PaperInfo.vue'),
+        },
+        {
+          path: '/recycle-bin',
+          name: 'recycle-bin',
+          component: () => import('@/views/home/recycle/RecycleBin.vue'),
+        },
+      ],
     },
   ],
 })

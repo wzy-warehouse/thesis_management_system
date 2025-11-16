@@ -1,6 +1,8 @@
 import type { PaperInfoResponse } from '@/types/paper/PaperInfoResponse'
+import type { PaperListItem } from '@/types/paper/PaperListItem'
 import type { PaperUpdateRequest } from '@/types/paper/PaperUpdateRequest'
 import type { PaperUploadRequest } from '@/types/paper/PaperUploadRequest'
+import type { QueryPaper } from '@/types/paper/QueryPaper'
 import type { Response } from '@/types/Response'
 import httpInstance from '@/utils/request/http'
 
@@ -19,6 +21,32 @@ export const upload = (uploadDatas: PaperUploadRequest): Promise<Response<number
     formData.append('folderId', uploadDatas.folderId.toString())
   }
   return httpInstance.post('/paper/upload', formData)
+}
+
+/**
+ * 搜索符合条件论文列表
+ * @param folderId 文件夹id，当文件夹id为0时默认搜索所有文件
+ * @param keyword 关键字
+ * @returns
+ */
+export const searchList = (folderId: number, keyword: string): Promise<Response<PaperListItem>> => {
+  return httpInstance.post('/paper/search-list', null, {
+    params: {
+      folderId,
+      keyword,
+    },
+  })
+}
+
+/**
+ * 查询论文基本信息
+ * @param paperDatas 查询数据
+ * @returns
+ */
+export const queryPaperBaseInfo = (
+  paperDatas: QueryPaper,
+): Promise<Response<PaperInfoResponse>> => {
+  return httpInstance.post('/paper/query-base-info', paperDatas)
 }
 
 /**

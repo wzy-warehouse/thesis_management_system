@@ -18,9 +18,6 @@
 
           <el-form-item>
             <el-button class="login-btn" type="success" @click="handleLogin">登录系统</el-button>
-            <el-button class="login-btn" type="success" @click="$api.paper.deleteById(1)"
-              >测试系统</el-button
-            >
           </el-form-item>
         </el-form>
       </div>

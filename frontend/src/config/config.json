@@ -4,5 +4,11 @@
   "rememberMeKey": "thesis_management_system.rememberPassword",
   "rememberMeTokenKey": "thesis_management_system.rememberToken",
   "noEncryptUrls": ["/crypto/sm2/public-key"],
-  "noTokenUrls": ["/crypto/sm2/public-key", "/user/login"]
+  "noTokenUrls": ["/crypto/sm2/public-key", "/user/login"],
+  "pagination": {
+    "total": "总页数 {total}",
+    "pagesize": "条/页",
+    "goto": "跳转到",
+    "pageClassifier": "页"
+  }
 }

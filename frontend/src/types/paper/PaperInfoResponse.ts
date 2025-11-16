@@ -1,4 +1,9 @@
 export interface PaperInfoResponse {
+  data: PaperInfoResponseData[]
+  totalPage: number
+}
+
+export interface PaperInfoResponseData {
   id: number
   title: string
   author: string
