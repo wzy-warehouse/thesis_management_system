@@ -2,12 +2,6 @@
   <div class="bottom-bg">
     <el-row>
       <el-col :span="24">
-        <el-button plain class="create-btn">新建文件夹</el-button>
-      </el-col>
-    </el-row>
-
-    <el-row>
-      <el-col :span="24">
         <el-button type="danger" plain @click="emit('content-change', 'recycle-bin')"
           >回收站</el-button
         >
@@ -24,7 +18,7 @@ const emit = defineEmits(['content-change'])
   background-color: rgba(255, 255, 255, 0.1) !important;
   display: block;
   width: 80%;
-  margin: 10px auto;
+  margin: 30px auto;
   border: 0;
 }
 

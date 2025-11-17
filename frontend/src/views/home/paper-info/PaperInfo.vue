@@ -44,12 +44,10 @@ watch(
 )
 
 function updatePageNum(num: number) {
-  console.log('updatePageNum', num)
   queryPaper.value.pageNum = num
 }
 
 function updatePageSize(size: number) {
-  console.log('updatePageSize', size)
   queryPaper.value.pageSize = size
 }
 

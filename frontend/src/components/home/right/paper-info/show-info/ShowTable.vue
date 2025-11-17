@@ -5,7 +5,14 @@
       <el-table-column align="center" type="index" width="50" />
       <el-table-column align="center" property="title" label="论文标题" />
       <el-table-column align="center" property="author" label="作者" />
-      <el-table-column align="center" property="journal" label="期刊名称/期刊类型" />
+      <el-table-column align="center" label="期刊名称/期刊类型">
+        <template #default="scope">
+          <el-row>
+            <el-col>{{ scope.row.journal }} / </el-col>
+            <el-col>{{ scope.row.journalType }}</el-col>
+          </el-row>
+        </template>
+      </el-table-column>
       <el-table-column align="center" property="publishTime" label="发表时间" />
       <el-table-column align="center" property="researchDirection" label="研究方向" />
       <el-table-column align="center" fixed="right" label="操作">

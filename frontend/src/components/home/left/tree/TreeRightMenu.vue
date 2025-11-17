@@ -5,9 +5,9 @@
     @click.stop
   >
     <ul>
-      <li @click="$emit('handleAdd', currentNode!)">新建子目录</li>
-      <li @click="$emit('handleRename', currentNode!)">重命名</li>
-      <li @click="$emit('handleDelete', currentNode!)">删除</li>
+      <li @click="$emit('handle-node', currentNode, 'add')">新建子目录</li>
+      <li @click="$emit('handle-node', currentNode, 'rename')">重命名</li>
+      <li @click="$emit('handle-node', currentNode, 'delete')">删除</li>
     </ul>
   </div>
 </template>

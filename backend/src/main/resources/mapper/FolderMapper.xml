@@ -35,4 +35,19 @@
         </where>
         ORDER BY f.id
     </select>
+
+    <insert id="createNewFolder" parameterType="com.laboratory.paper.entity.Folder" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO folder(
+            name,
+            parent_id,
+            create_user,
+            create_time
+        )
+        VALUES(
+            #{name},
+            #{parentId},
+            #{createUser},
+            now()
+        )
+    </insert>
 </mapper>

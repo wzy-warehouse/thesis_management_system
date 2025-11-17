@@ -1,13 +1,13 @@
 <template>
   <div class="home-bg">
-    <LeftSidebar @content-change="handleContentChange" @folder-id-change="handleFolderIdChange" />
+    <LeftSidebar />
     <RightSidebar :current-path="currentPath" :current-folder-id="currentFolderId" />
   </div>
 </template>
 <script name="HomePage" setup lang="ts">
 import LeftSidebar from '@/components/home/LeftSidebar.vue'
 import RightSidebar from '@/components/home/RightSidebar.vue'
-import { ref } from 'vue'
+import { provide, ref } from 'vue'
 
 // 响应式变量：存储当前点击按钮的目标路径
 const currentPath = ref<string>('paper-info')
@@ -22,6 +22,9 @@ const handleContentChange = (path: string) => {
 const handleFolderIdChange = (id: number) => {
   currentFolderId.value = id
 }
+
+provide('content-change', handleContentChange)
+provide('folder-id-change', handleFolderIdChange)
 </script>
 <style scoped>
 .home-bg {

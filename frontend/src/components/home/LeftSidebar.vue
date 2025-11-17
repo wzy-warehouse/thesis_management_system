@@ -1,10 +1,7 @@
 <template>
   <div class="left-sidebar">
     <LogoPart />
-    <BarPart
-      @content-change="(...args: unknown[]) => $emit('content-change', ...args)"
-      @folder-id-change="(...args: unknown[]) => $emit('folder-id-change', ...args)"
-    />
+    <BarPart />
     <BottomFunctionGroup
       @content-change="(...args: unknown[]) => $emit('content-change', ...args)"
     />

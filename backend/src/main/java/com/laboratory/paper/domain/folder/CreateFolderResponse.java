@@ -11,4 +11,8 @@ public class CreateFolderResponse implements Serializable {
     private static final long serialVersionUID = -6643803509710485292L;
 
     private Long folderId;
+
+    public CreateFolderResponse(Long folderId) {
+        this.folderId = folderId;
+    }
 }
