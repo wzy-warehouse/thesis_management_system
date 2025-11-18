@@ -13,13 +13,14 @@ import type { PaperUploadRequest } from '@/types/paper/PaperUploadRequest'
 import { deleteById, queryById, queryPaperBaseInfo, searchList, update, upload } from './paper'
 import type { PaperUpdateRequest } from '@/types/paper/PaperUpdateRequest'
 import type { FolderCreateRequest } from '@/types/folder/FolderCreateRequest'
-import { addPaper, create as createFolder, queryFolder, renameFolder } from './folder'
+import { addPaper, create as createFolder, deleteFolder, queryFolder, renameFolder } from './folder'
 import type { AddPaperRequest } from '@/types/folder/AddPaperRequest'
 import type { CreateShareRequest } from '@/types/share/CreateShareRequest'
 import { create as createShare } from './share'
 import { generate } from './citation'
 import { getSm2PublicKey } from './crypto'
 import type { QueryPaper } from '@/types/paper/QueryPaper'
+import { deleteByFolderId } from './recycle-bin'
 
 export const $api = {
   // 用户模块
@@ -74,8 +75,17 @@ export const $api = {
     // 重命名文件夹
     renameFolder: (name: string, id: number) => renameFolder(name, id),
 
+    // 删除文件夹
+    deleteFolder: (id: number) => deleteFolder(id),
+
     // 添加论文
     addPaper: (addPaperData: AddPaperRequest) => addPaper(addPaperData),
+  },
+
+  // 回收站模块
+  recycleBin: {
+    // 按照文件夹id删除论文
+    deleteByFolderId: (folderId: number) => deleteByFolderId(folderId),
   },
 
   // 分享模块

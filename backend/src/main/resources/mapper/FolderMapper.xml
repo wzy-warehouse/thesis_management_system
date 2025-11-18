@@ -58,4 +58,11 @@
             id = #{id}
         </where>
     </update>
+
+    <delete id="deleteFolder">
+        DELETE FROM folder
+        <where>
+            id = #{id}
+        </where>
+    </delete>
 </mapper>

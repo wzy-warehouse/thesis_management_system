@@ -124,13 +124,12 @@ httpInstance.interceptors.response.use(
     }
 
     // 统一判断处理后的数据状态
-    if (processedData?.code === 200) {
+    if (processedData?.code === 200 || processedData?.code === 409) {
       return processedData
     } else if (processedData?.code == 401) {
       router.push(`/login?redirect=${router.currentRoute.value.fullPath}`)
       ElMessage.error('请先登录')
     } else {
-      // code非200时提示错误信息
       const errorMsg = processedData?.message || '操作失败，请稍后重试'
       ElMessage.error(errorMsg)
       return Promise.reject(new Error(errorMsg))

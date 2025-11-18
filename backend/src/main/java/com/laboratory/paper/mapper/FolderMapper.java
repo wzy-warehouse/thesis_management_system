@@ -15,4 +15,6 @@ public interface FolderMapper {
     void createNewFolder(Folder folder);
 
     void renameFolder(@Param("name") String name, @Param("id") Long id);
+
+    void deleteFolder(@Param("id") Long id);
 }

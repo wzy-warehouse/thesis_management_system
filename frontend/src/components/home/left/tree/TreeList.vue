@@ -40,6 +40,14 @@
     @handle-node2-null="handleNode2Null"
     @handle-rename-success="handleRenameSuccess"
   />
+
+  <!-- 删除目录 -->
+  <DeleteFolder
+    v-if="clickDeleteTreeNode != null"
+    :click-delete-tree-node="clickDeleteTreeNode"
+    @handle-node2-null="handleNode2Null"
+    @handle-delete-success="handleDeleteSuccess"
+  />
 </template>
 <script name="TreeList" setup lang="ts">
 import { $api } from '@/api/api'
@@ -50,6 +58,7 @@ import { inject, ref, type Ref } from 'vue'
 import TreeRightMenu from './TreeRightMenu.vue'
 import CreateNewFolder from './CreateNewFolder.vue'
 import RenameFolder from './RenameFolder.vue'
+import DeleteFolder from './DeleteFolder.vue'
 
 const props = defineProps<{
   treeData: Tree[]
@@ -131,6 +140,7 @@ const handleNode2Null = (type: 'add' | 'delete' | 'rename') => {
 // 添加节点成功
 function handleAddSuccess(newNode: Tree) {
   const parentNode = clickAddTreeNode.value
+
   if (!parentNode) return
 
   // 初始化父节点的children

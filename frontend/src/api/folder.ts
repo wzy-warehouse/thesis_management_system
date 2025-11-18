@@ -47,6 +47,15 @@ export const renameFolder = (name: string, id: number): Promise<Response<void>> 
 }
 
 /**
+ * 删除文件夹
+ * @param id
+ * @returns
+ */
+export const deleteFolder = (id: number): Promise<Response<void>> => {
+  return httpInstance.delete(`/folder/delete/${id}`)
+}
+
+/**
  * 添加论文
  * @param addPaperData
  * @returns

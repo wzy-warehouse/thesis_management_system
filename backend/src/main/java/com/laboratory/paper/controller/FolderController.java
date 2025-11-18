@@ -11,10 +11,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -56,6 +53,12 @@ public class FolderController extends BaseController {
             Long id){
         folderService.renameFolder(name, id);
         return ApiResponse.ok("重命名成功", null);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ApiResponse<Void> delete(@PathVariable String id) {
+        folderService.deleteFolder(Long.parseLong(id));
+        return ApiResponse.ok("删除成功", null);
     }
 
     @PostMapping("/add-paper")

@@ -1,6 +1,7 @@
 package com.laboratory.paper.controller;
 
 import com.laboratory.paper.domain.ApiResponse;
+import com.laboratory.paper.service.ex.FilesInRecycleBinException;
 import com.laboratory.paper.service.ex.ServiceException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -12,7 +13,11 @@ public class BaseController{
     // 用于统一处理应用层抛出的异常
     @ExceptionHandler(ServiceException.class)
     public ApiResponse<Void> handleServiceException(Throwable e) {
-        return ApiResponse.error(e.getMessage());
+        if(e instanceof FilesInRecycleBinException) {
+            return ApiResponse.error(409, e.getMessage());
+        }else {
+            return ApiResponse.error(e.getMessage());
+        }
     }
 
     // 用于统一处理其余抛出的异常

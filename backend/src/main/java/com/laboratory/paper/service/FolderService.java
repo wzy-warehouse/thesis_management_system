@@ -11,4 +11,6 @@ public interface FolderService {
     CreateFolderResponse createFolder(String name, Long parentId, Long createUserId);
 
     void renameFolder(String name, Long id);
+
+    void deleteFolder(Long id);
 }
