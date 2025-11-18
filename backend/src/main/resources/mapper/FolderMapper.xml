@@ -50,4 +50,12 @@
             now()
         )
     </insert>
+
+    <update id="renameFolder">
+        UPDATE folder SET
+            name = #{name}
+        <where>
+            id = #{id}
+        </where>
+    </update>
 </mapper>

@@ -9,4 +9,6 @@ public interface FolderService {
     List<QueryFolderResponse> queryFolder(Long parentId);
 
     CreateFolderResponse createFolder(String name, Long parentId, Long createUserId);
+
+    void renameFolder(String name, Long id);
 }

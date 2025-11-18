@@ -32,6 +32,21 @@ export const create = (
 }
 
 /**
+ * 重命名文件夹
+ * @param name
+ * @param id
+ * @returns
+ */
+export const renameFolder = (name: string, id: number): Promise<Response<void>> => {
+  return httpInstance.post('/folder/rename', null, {
+    params: {
+      name,
+      id,
+    },
+  })
+}
+
+/**
  * 添加论文
  * @param addPaperData
  * @returns

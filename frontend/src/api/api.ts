@@ -13,7 +13,7 @@ import type { PaperUploadRequest } from '@/types/paper/PaperUploadRequest'
 import { deleteById, queryById, queryPaperBaseInfo, searchList, update, upload } from './paper'
 import type { PaperUpdateRequest } from '@/types/paper/PaperUpdateRequest'
 import type { FolderCreateRequest } from '@/types/folder/FolderCreateRequest'
-import { addPaper, create as createFolder, queryFolder } from './folder'
+import { addPaper, create as createFolder, queryFolder, renameFolder } from './folder'
 import type { AddPaperRequest } from '@/types/folder/AddPaperRequest'
 import type { CreateShareRequest } from '@/types/share/CreateShareRequest'
 import { create as createShare } from './share'
@@ -70,6 +70,9 @@ export const $api = {
 
     // 创建文件夹
     create: (createData: FolderCreateRequest) => createFolder(createData),
+
+    // 重命名文件夹
+    renameFolder: (name: string, id: number) => renameFolder(name, id),
 
     // 添加论文
     addPaper: (addPaperData: AddPaperRequest) => addPaper(addPaperData),

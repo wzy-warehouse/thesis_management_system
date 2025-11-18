@@ -12,5 +12,7 @@ public interface FolderMapper {
 
     List<QueryFolderResponse> getFoldersByParentId(Long parentId);
 
-    Long createNewFolder(Folder folder);
+    void createNewFolder(Folder folder);
+
+    void renameFolder(@Param("name") String name, @Param("id") Long id);
 }

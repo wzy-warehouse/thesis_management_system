@@ -6,6 +6,7 @@ import com.laboratory.paper.domain.ApiResponse;
 import com.laboratory.paper.domain.folder.QueryFolderResponse;
 import com.laboratory.paper.service.FolderService;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -38,8 +39,23 @@ public class FolderController extends BaseController {
             String name,
             @RequestParam(value = "parentId")
             @NotNull(message = "父级目录不能为空")
+            @Min(value = 1, message = "父目录id不能小于1")
             Long parentId) {
         return ApiResponse.ok(folderService.createFolder(name, parentId, StpUtil.getLoginIdAsLong()));
+    }
+
+    @PostMapping("/rename")
+    public ApiResponse<Void> rename(
+            @RequestParam(value = "name")
+            @NotEmpty(message = "目录名称不能为空")
+            @Size(max = 100, message = "目录名称不能超过100个字符")
+            String name,
+            @RequestParam(value = "id")
+            @NotNull(message = "目录id不能为空")
+            @Min(value = 1, message = "目录id不能小于1")
+            Long id){
+        folderService.renameFolder(name, id);
+        return ApiResponse.ok("重命名成功", null);
     }
 
     @PostMapping("/add-paper")

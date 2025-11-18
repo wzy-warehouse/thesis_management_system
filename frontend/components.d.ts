@@ -37,6 +37,7 @@ declare module 'vue' {
     LeftSidebar: typeof import('./src/components/home/LeftSidebar.vue')['default']
     LogoPart: typeof import('./src/components/home/left/LogoPart.vue')['default']
     PaperInfo: typeof import('./src/components/home/right/PaperInfo.vue')['default']
+    RenameFolder: typeof import('./src/components/home/left/tree/RenameFolder.vue')['default']
     Right: typeof import('./src/components/home/Right.vue')['default']
     RightSidebar: typeof import('./src/components/home/RightSidebar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

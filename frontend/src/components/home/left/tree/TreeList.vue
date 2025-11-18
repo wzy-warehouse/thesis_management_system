@@ -32,6 +32,14 @@
     @handle-node2-null="handleNode2Null"
     @handle-add-success="handleAddSuccess"
   />
+
+  <!-- 重命名目录 -->
+  <RenameFolder
+    v-if="clickRenameTreeNode != null"
+    :click-rename-tree-node="clickRenameTreeNode"
+    @handle-node2-null="handleNode2Null"
+    @handle-rename-success="handleRenameSuccess"
+  />
 </template>
 <script name="TreeList" setup lang="ts">
 import { $api } from '@/api/api'
@@ -41,6 +49,7 @@ import { Folder } from '@element-plus/icons-vue'
 import { inject, ref, type Ref } from 'vue'
 import TreeRightMenu from './TreeRightMenu.vue'
 import CreateNewFolder from './CreateNewFolder.vue'
+import RenameFolder from './RenameFolder.vue'
 
 const props = defineProps<{
   treeData: Tree[]

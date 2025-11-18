@@ -33,4 +33,9 @@ public class IFolderServiceImpl implements FolderService {
 
         return new CreateFolderResponse(folder.getId());
     }
+
+    @Override
+    public void renameFolder(String name, Long id) {
+        folderMapper.renameFolder(name, id);
+    }
 }
