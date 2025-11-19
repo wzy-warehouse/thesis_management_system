@@ -72,6 +72,6 @@ export const update = (updateData: PaperUpdateRequest): Promise<Response<void>> 
  * @param id
  * @returns
  */
-export const deleteById = (id: number): Promise<Response<void>> => {
-  return httpInstance.delete(`/paper/delete/${id}`)
+export const deleteById = (id: number, folderId: number): Promise<Response<void>> => {
+  return httpInstance.delete(`/paper/delete/${id}/${folderId}`)
 }

@@ -1,5 +1,6 @@
 package com.laboratory.paper.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.laboratory.paper.domain.paper.PaperListItem;
 import com.laboratory.paper.domain.paper.PaperResponse;
 import com.laboratory.paper.domain.ApiResponse;
@@ -52,8 +53,9 @@ public class PaperController extends BaseController {
         return ApiResponse.ok("更新成功", null);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ApiResponse<Void> deleteById(@PathVariable String id) {
+    @DeleteMapping("/delete/{id}/{parentId}")
+    public ApiResponse<Void> deleteById(@PathVariable String id, @PathVariable String parentId) {
+        paperService.deletePaper(Long.parseLong(id), Long.parseLong(parentId), StpUtil.getLoginIdAsLong());
         return ApiResponse.ok("已移至回收站", null);
     }
 }

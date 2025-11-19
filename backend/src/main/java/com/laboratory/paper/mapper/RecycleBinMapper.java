@@ -2,6 +2,7 @@ package com.laboratory.paper.mapper;
 
 import com.laboratory.paper.entity.RecycleBin;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -9,5 +10,19 @@ import java.util.List;
 public interface RecycleBinMapper {
     List<RecycleBin> queryRecycleBinByParentId(Long parentId);
 
+    List<RecycleBin> queryRecycleBinByIdFolderId(
+            @Param("paperId") Long paperId,
+            @Param("parentId") Long parentId);
+
     void deleteByFolderId(Long folderId);
+
+    /**
+     * 移动到回收站
+     * @param paperId 论文id
+     * @param parentId 父目录id
+     */
+    void removeToRecycleBin(
+            @Param("paperId") Long paperId,
+            @Param("parentId") Long parentId,
+            @Param("userId") Long userId);
 }

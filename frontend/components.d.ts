@@ -16,6 +16,7 @@ declare module 'vue' {
     BottomGroup: typeof import('./src/components/home/left/BottomGroup.vue')['default']
     CreateNewFolder: typeof import('./src/components/home/left/tree/CreateNewFolder.vue')['default']
     DeleteFolder: typeof import('./src/components/home/left/tree/DeleteFolder.vue')['default']
+    DeletePaper: typeof import('./src/components/home/right/paper-info/show-info/table-operation/DeletePaper.vue')['default']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']

@@ -61,7 +61,7 @@ export const $api = {
     update: (updateDatas: PaperUpdateRequest) => update(updateDatas),
 
     // 按照id删除论文
-    deleteById: (id: number) => deleteById(id),
+    deleteById: (id: number, folderId: number) => deleteById(id, folderId),
   },
 
   // 文件夹模块

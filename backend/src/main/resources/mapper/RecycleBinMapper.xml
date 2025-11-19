@@ -18,10 +18,28 @@
         </where>
     </select>
 
+    <select id="queryRecycleBinByIdFolderId" resultMap="RecycleBinMap">
+        SELECT id, paper_id, parent_id, delete_time, delete_user FROM recycle_bin
+        <where>
+            paper_id = #{paperId} AND
+            parent_id = #{parentId}
+        </where>
+    </select>
+
     <delete id="deleteByFolderId">
         DELETE FROM recycle_bin
         <where>
             parent_id = #{folderId}
         </where>
     </delete>
+
+    <insert id="removeToRecycleBin">
+        INSERT INTO recycle_bin(paper_id, parent_id, delete_time, delete_user)
+        VALUES(
+            #{paperId},
+            #{parentId},
+            NOW(),
+            #{userId}
+        )
+    </insert>
 </mapper>

@@ -4,8 +4,12 @@ import com.laboratory.paper.domain.paper.PaperListItem;
 import com.laboratory.paper.domain.paper.PaperResponse;
 import com.laboratory.paper.domain.paper.PaperResponseData;
 import com.laboratory.paper.entity.Paper;
+import com.laboratory.paper.entity.RecycleBin;
+import com.laboratory.paper.mapper.PaperFolderMapper;
 import com.laboratory.paper.mapper.PaperMapper;
+import com.laboratory.paper.mapper.RecycleBinMapper;
 import com.laboratory.paper.service.PaperService;
+import com.laboratory.paper.service.ex.PaperExistsInRecycleBinException;
 import com.laboratory.paper.vo.paper.QueryPaperBaseInfoVo;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,12 @@ import java.util.List;
 public class IPaperServiceImpl implements PaperService {
     @Resource
     private PaperMapper paperMapper;
+
+    @Resource
+    private PaperFolderMapper paperFolderMapper;
+
+    @Resource
+    private RecycleBinMapper recycleBinMapper;
 
     @Override
     public List<PaperListItem> searchPaperList(Long folderId, String keyword) {
@@ -61,5 +71,21 @@ public class IPaperServiceImpl implements PaperService {
         paperResponse.setTotalPage(totalPage);
 
         return paperResponse;
+    }
+
+    @Override
+    public void deletePaper(Long id, Long parentId, Long userId) {
+        // 判断回收站中是否存在该文件
+        List<RecycleBin> recycleBinsList = recycleBinMapper.queryRecycleBinByIdFolderId(id, parentId);
+
+        if(recycleBinsList != null && !recycleBinsList.isEmpty()) {
+            throw new PaperExistsInRecycleBinException();
+        }
+
+        // 从目录移除
+        paperFolderMapper.deleteByPaperIdFolderId(id, parentId);
+
+        // 移动到回收站
+        recycleBinMapper.removeToRecycleBin(id, parentId, userId);
     }
 }

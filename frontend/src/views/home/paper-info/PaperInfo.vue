@@ -4,7 +4,7 @@
     @handle-paper-id-change="handlePaperIdChange"
   />
 
-  <ShowInfo :table-datas="tableDatas" />
+  <ShowInfo :table-datas="tableDatas" :folder-id="currentFolderId" />
 </template>
 <script name="PaperInfo" setup lang="ts">
 import SearchAndUpload from '@/components/home/right/paper-info/SearchAndUpload.vue'
@@ -26,6 +26,8 @@ const queryPaper: Ref<QueryPaper> = ref({
   pageSize: 10,
   totalPage: 0,
 })
+
+provide('delete-paper-success', deletePaperSuccess)
 
 // 表格数据
 const tableDatas: Ref<PaperInfoResponseData[]> = ref([])
@@ -71,5 +73,15 @@ watch(
     true,
   ),
 )
+
+// 删除论文成功后刷新
+function deletePaperSuccess(id: number) {
+  console.log('删除成功', id)
+  tableDatas.value.forEach((item, index) => {
+    if (item.id === id) {
+      tableDatas.value.splice(index, 1)
+    }
+  })
+}
 </script>
 <style scoped></style>

@@ -24,5 +24,4 @@ public class Paper {
   private Long createUser;
   private LocalDateTime createTime;
   private LocalDateTime updateTime;
-  private Short isDeleted;
 }

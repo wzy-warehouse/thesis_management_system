@@ -14,7 +14,6 @@
         <result column="create_user" property="createUser" javaType="java.lang.Long"/>
         <result column="create_time" property="createTime" javaType="java.time.LocalDateTime" />
         <result column="update_time" property="updateTime" javaType="java.time.LocalDateTime" />
-        <result column="is_deleted" property="isDeleted" javaType="java.lang.Short" />
     </resultMap>
 
     <!-- 按文件夹查询 -->

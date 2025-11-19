@@ -4,7 +4,11 @@
       <el-button type="danger" :disabled="disabledDeleteBtn">删除选中</el-button>
     </div>
     <div class="table-box">
-      <ShowTable :table-datas="tableDatas" @update:hasSelection="handleHasSelection" />
+      <ShowTable
+        :table-datas="tableDatas"
+        :folder-id="folderId"
+        @update:hasSelection="handleHasSelection"
+      />
     </div>
     <div class="pages-box">
       <ShowPage />
@@ -19,6 +23,7 @@ import { ref } from 'vue'
 
 defineProps<{
   tableDatas: PaperInfoResponseData[]
+  folderId: number
 }>()
 
 // 禁止选点击
