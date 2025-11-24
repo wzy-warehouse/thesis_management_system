@@ -270,7 +270,12 @@ public class IPaperServiceImpl implements PaperService {
     private void record2Database(boolean exist, PaperUploadRequest paperUploadRequest, Long userId) {
         // 不存在就添加
         if (!exist) {
-            Paper paper = new Paper(userId, paperUploadRequest.getFilename(), paperUploadRequest.getFilePath(), paperUploadRequest.getIdentifier().split("_")[0]);
+            Paper paper = new Paper(
+                    userId,
+                    paperUploadRequest.getFilename(),
+                    paperUploadRequest.getTotalSize().longValue(),
+                    paperUploadRequest.getFilePath(),
+                    paperUploadRequest.getIdentifier().split("_")[0]);
             paperMapper.insertPaper(paper);
             paperUploadRequest.setPaperId(paper.getId());
         }

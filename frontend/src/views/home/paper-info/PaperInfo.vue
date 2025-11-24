@@ -69,7 +69,6 @@ watch(() => [queryPaper.value.paperId, queryPaper.value.folderId], queryPaperLis
  * 查询论文列表
  */
 function queryPaperList() {
-  console.log('queryPaper', queryPaper.value)
   const debouncedQuery = Utils.debounce(
     () => {
       // 查询论文信息

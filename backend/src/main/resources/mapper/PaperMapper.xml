@@ -112,10 +112,11 @@
     </select>
 
     <insert id="insertPaper" parameterType="com.laboratory.paper.entity.Paper" keyProperty="id" useGeneratedKeys="true">
-        INSERT INTO paper(title, file_path, file_hash, create_user, create_time)
+        INSERT INTO paper(title, file_path, file_size, file_hash, create_user, create_time)
         VALUES(
             #{title},
             #{filePath},
+            #{fileSize},
             #{fileHash},
             #{createUser},
             now()

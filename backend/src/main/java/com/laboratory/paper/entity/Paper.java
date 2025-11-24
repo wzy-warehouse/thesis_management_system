@@ -28,9 +28,10 @@ public class Paper {
   public Paper() {
   }
 
-  public Paper(Long createUser, String title, String filePath, String fileHash) {
+  public Paper(Long createUser, String title, Long fileSize, String filePath, String fileHash) {
     this.createUser = createUser;
     this.title = title;
+    this.fileSize = fileSize;
     this.filePath = filePath;
     this.fileHash = fileHash;
   }
