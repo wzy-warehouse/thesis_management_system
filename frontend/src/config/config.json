@@ -3,12 +3,18 @@
   "apiBaseUrl": "/api",
   "rememberMeKey": "thesis_management_system.rememberPassword",
   "rememberMeTokenKey": "thesis_management_system.rememberToken",
-  "noEncryptUrls": ["/crypto/sm2/public-key"],
+  "noEncryptUrls": ["/crypto/sm2/public-key", "/paper/upload"],
   "noTokenUrls": ["/crypto/sm2/public-key", "/user/login"],
   "pagination": {
     "total": "总页数 {total}",
     "pagesize": "条/页",
     "goto": "跳转到",
     "pageClassifier": "页"
+  },
+  "fileUpload": {
+    "simultaneousUploads": 3,
+    "chunkSize": 5242880,
+    "maxChunkRetries": 3,
+    "chunkRetryInterval": 1000
   }
 }

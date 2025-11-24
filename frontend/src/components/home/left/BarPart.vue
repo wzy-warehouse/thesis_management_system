@@ -26,5 +26,6 @@ onMounted(() => {
   width: 100%;
   height: calc(100vh - 170px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-y: auto;
 }
 </style>

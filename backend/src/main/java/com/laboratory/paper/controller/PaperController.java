@@ -5,6 +5,7 @@ import com.laboratory.paper.domain.paper.PaperListItem;
 import com.laboratory.paper.domain.paper.PaperResponse;
 import com.laboratory.paper.domain.ApiResponse;
 import com.laboratory.paper.domain.paper.PaperResponseData;
+import com.laboratory.paper.domain.paper.PaperUploadRequest;
 import com.laboratory.paper.service.PaperService;
 import com.laboratory.paper.vo.paper.PaperVo;
 import com.laboratory.paper.vo.paper.QueryPaperBaseInfoVo;
@@ -12,6 +13,7 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,11 +38,11 @@ public class PaperController extends BaseController {
         return ApiResponse.ok(paperService.queryBaseInfo(queryPaperBaseInfo));
     }
 
-    @PostMapping("/upload")
-    public ApiResponse<List<Long>> upload(
-            @RequestParam("files") MultipartFile[] files,
-            @RequestParam(value = "folderId", required = false) Long folderId) {
-        return ApiResponse.ok(List.of(1L, 2L, 3L));
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<Void> upload(PaperUploadRequest paperUploadRequest,
+                                    @RequestPart("file") MultipartFile file) {
+        paperService.upload(paperUploadRequest, file, StpUtil.getLoginIdAsLong());
+        return ApiResponse.ok("上传成功", null);
     }
 
     @GetMapping("/{id}")

@@ -24,4 +24,14 @@ public class Paper {
   private Long createUser;
   private LocalDateTime createTime;
   private LocalDateTime updateTime;
+
+  public Paper() {
+  }
+
+  public Paper(Long createUser, String title, String filePath, String fileHash) {
+    this.createUser = createUser;
+    this.title = title;
+    this.filePath = filePath;
+    this.fileHash = fileHash;
+  }
 }

@@ -42,4 +42,12 @@
             #{userId}
         )
     </insert>
+
+    <delete id="deleteRecycleBinByPaperIdFolderId">
+        DELETE FROM recycle_bin
+        <where>
+            paper_id = #{paperId} AND
+            parent_id = #{folderId}
+        </where>
+    </delete>
 </mapper>

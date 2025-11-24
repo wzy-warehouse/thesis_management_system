@@ -9,8 +9,7 @@ import {
 } from './user'
 import type { changePasswordRequest } from '@/types/user/ChangePasswordRequest'
 import type { CreateUserRequest } from '@/types/user/CreateUserRequest'
-import type { PaperUploadRequest } from '@/types/paper/PaperUploadRequest'
-import { deleteById, queryById, queryPaperBaseInfo, searchList, update, upload } from './paper'
+import { deleteById, queryById, queryPaperBaseInfo, searchList, update } from './paper'
 import type { PaperUpdateRequest } from '@/types/paper/PaperUpdateRequest'
 import type { FolderCreateRequest } from '@/types/folder/FolderCreateRequest'
 import { addPaper, create as createFolder, deleteFolder, queryFolder, renameFolder } from './folder'
@@ -50,9 +49,6 @@ export const $api = {
     searchList: (folderId: number, keyword: string) => searchList(folderId, keyword),
 
     queryPaperBaseInfo: (paperDatas: QueryPaper) => queryPaperBaseInfo(paperDatas),
-
-    // 上传文件
-    upload: (uploadDatas: PaperUploadRequest) => upload(uploadDatas),
 
     // 获取论文
     queryById: (id: number) => queryById(id),

@@ -1,27 +1,9 @@
 import type { PaperInfoResponse } from '@/types/paper/PaperInfoResponse'
 import type { PaperListItem } from '@/types/paper/PaperListItem'
 import type { PaperUpdateRequest } from '@/types/paper/PaperUpdateRequest'
-import type { PaperUploadRequest } from '@/types/paper/PaperUploadRequest'
 import type { QueryPaper } from '@/types/paper/QueryPaper'
 import type { Response } from '@/types/Response'
 import httpInstance from '@/utils/request/http'
-
-/**
- * 上传文件
- * @param uploadDatas
- * @returns 上传的文件id列表
- */
-export const upload = (uploadDatas: PaperUploadRequest): Promise<Response<number[]>> => {
-  const formData = new FormData()
-  uploadDatas.files.forEach((file) => {
-    formData.append('files', file)
-  })
-
-  if (uploadDatas.folderId) {
-    formData.append('folderId', uploadDatas.folderId.toString())
-  }
-  return httpInstance.post('/paper/upload', formData)
-}
 
 /**
  * 搜索符合条件论文列表

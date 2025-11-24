@@ -12,7 +12,7 @@ const SM4_MODE = SM4.constants.ECB
 const SM4_INPUT_ENCODING = 'utf8'
 const SM4_OUTPUT_ENCODING = 'hex'
 
-export const cryptUtils = {
+export const SafetyUtils = {
   /**
    * 获取SM2公钥
    */
@@ -35,7 +35,7 @@ export const cryptUtils = {
    * 生成随机SM4密钥（16字节=32位十六进制字符串）
    */
   generateSm4Key: (): string => {
-    return cryptUtils._generateRandomHex(16)
+    return SafetyUtils._generateRandomHex(16)
   },
 
   /**
@@ -43,7 +43,7 @@ export const cryptUtils = {
    */
   sm2Encrypt: async (data: object | string, publicKey?: string): Promise<string> => {
     try {
-      const targetPublicKey = publicKey || (await cryptUtils.getSm2PublicKey())
+      const targetPublicKey = publicKey || (await SafetyUtils.getSm2PublicKey())
       const plaintext = typeof data === 'string' ? data : JSON.stringify(data)
       return (
         '04' +
@@ -127,7 +127,7 @@ export const cryptUtils = {
         encryptedFormData.append(fieldName, value, (value as File).name)
       } else {
         // 加密普通字段
-        const encryptedValue = cryptUtils.sm4Encrypt(key, String(value))
+        const encryptedValue = SafetyUtils.sm4Encrypt(key, String(value))
         encryptedFormData.append(fieldName, encryptedValue)
       }
     }

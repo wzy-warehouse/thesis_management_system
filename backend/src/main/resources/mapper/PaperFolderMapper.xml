@@ -16,4 +16,15 @@
          folder_id = #{folderId}
       </where>
    </delete>
+
+   <select id="queryPaperFolder" resultType="int">
+      SELECT COUNT(*) FROM paper_folder
+      <where>
+         paper_id = #{paperId} AND folder_id = #{folderId}
+      </where>
+   </select>
+   
+   <insert id="insertPaperFolder">
+      INSERT INTO paper_folder(paper_id, folder_id) VALUES(#{paperId}, #{folderId})
+   </insert>
 </mapper>

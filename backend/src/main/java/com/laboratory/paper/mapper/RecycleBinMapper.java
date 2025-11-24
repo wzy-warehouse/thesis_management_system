@@ -25,4 +25,13 @@ public interface RecycleBinMapper {
             @Param("paperId") Long paperId,
             @Param("parentId") Long parentId,
             @Param("userId") Long userId);
+
+    /**
+     * 按照文件id和目录id删除回收站中文件
+     * @param paperId 文件id
+     * @param folderId 目录id
+     */
+    void deleteRecycleBinByPaperIdFolderId(
+            @Param("paperId") Long paperId,
+            @Param("folderId") Long folderId);
 }

@@ -103,4 +103,22 @@
             p.id = #{paperId}
         </where>
     </select>
+
+    <select id="fileExists" resultType="int">
+        SELECT id FROM paper
+        <where>
+            file_hash = #{fileHash}
+        </where>
+    </select>
+
+    <insert id="insertPaper" parameterType="com.laboratory.paper.entity.Paper" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO paper(title, file_path, file_hash, create_user, create_time)
+        VALUES(
+            #{title},
+            #{filePath},
+            #{fileHash},
+            #{createUser},
+            now()
+        )
+    </insert>
 </mapper>

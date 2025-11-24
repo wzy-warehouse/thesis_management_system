@@ -1,5 +1,6 @@
 package com.laboratory.paper.mapper;
 
+import com.laboratory.paper.entity.PaperFolder;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,4 +14,17 @@ public interface PaperFolderMapper {
     void deleteByPaperIdFolderId(
             @Param("paperId") Long paperId,
             @Param("folderId") Long folderId);
+
+    /**
+     * 查询对应关系是否已经存在
+     * @param paperFolder 参数
+     * @return 数量
+     */
+    Integer queryPaperFolder(PaperFolder paperFolder);
+
+    /**
+     * 写入关联
+     * @param paperFolder 参数
+     */
+    void insertPaperFolder(PaperFolder paperFolder);
 }

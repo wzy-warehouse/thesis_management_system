@@ -46,4 +46,17 @@ public interface PaperMapper {
      * @return 论文列表
      */
     List<Paper> queryPapersById(QueryPaperBaseInfoVo queryPaperBaseInfo);
+
+    /**
+     * 判断文件是否已经存在
+     * @param fileHash 文件hash
+     * @return 存在的数量
+     */
+    Integer fileExists(String fileHash);
+
+    /**
+     * 添加数据
+     * @param paper 参数
+     */
+    void insertPaper(Paper paper);
 }

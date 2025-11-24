@@ -1,7 +1,7 @@
 import axios, { type InternalAxiosRequestConfig, type AxiosResponse } from 'axios'
 import configJson from '@/config/config.json'
 import { useUserStore } from '@/stores/useUserStore'
-import { cryptUtils } from '../safety/crypto'
+import { SafetyUtils } from '../safety/SafetyUtils.ts'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
 
@@ -41,14 +41,14 @@ httpInstance.interceptors.request.use(
     if (!isNoEncryptUrl) {
       try {
         // 生成SM4密钥并加密，无论是否有业务参数
-        const sm4Key = cryptUtils.generateSm4Key()
+        const sm4Key = SafetyUtils.generateSm4Key()
         config.__sm4Key = sm4Key
-        const sm4KeyEncrypted = await cryptUtils.sm2Encrypt(sm4Key)
+        const sm4KeyEncrypted = await SafetyUtils.sm2Encrypt(sm4Key)
 
         // GET请求：处理URL参数（无论是否有params，都要传递sm4KeyEncrypted）
         if (method?.toUpperCase() === 'GET') {
           // 有业务参数则加密，无参数则仅传递sm4KeyEncrypted
-          const encryptedParams = config.params ? cryptUtils.sm4Encrypt(sm4Key, config.params) : '' // 无参数时encryptedData可为空
+          const encryptedParams = config.params ? SafetyUtils.sm4Encrypt(sm4Key, config.params) : '' // 无参数时encryptedData可为空
 
           config.params = {
             encryptedData: encryptedParams,
@@ -60,7 +60,7 @@ httpInstance.interceptors.request.use(
         if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method?.toUpperCase() || '')) {
           if (config.data instanceof FormData) {
             // 加密表单数据
-            const encryptedFormData = cryptUtils.encryptFormData(sm4Key, config.data)
+            const encryptedFormData = SafetyUtils.encryptFormData(sm4Key, config.data)
 
             const newFormData = new FormData()
             // 复制加密后的业务字段
@@ -72,7 +72,7 @@ httpInstance.interceptors.request.use(
             config.data = newFormData
           } else {
             // 有业务数据则加密，无数据则encryptedData为空
-            const encryptedData = config.data ? cryptUtils.sm4Encrypt(sm4Key, config.data) : ''
+            const encryptedData = config.data ? SafetyUtils.sm4Encrypt(sm4Key, config.data) : ''
 
             config.data = {
               encryptedData: encryptedData,
@@ -108,10 +108,10 @@ httpInstance.interceptors.response.use(
       try {
         if (typeof data === 'string') {
           // 解密字符串类型的加密数据
-          processedData = cryptUtils.sm4Decrypt(config.__sm4Key, data)
+          processedData = SafetyUtils.sm4Decrypt(config.__sm4Key, data)
         } else if (data && typeof data === 'object') {
           // 解密对象中包含的加密字段
-          processedData = cryptUtils.sm4Decrypt(config.__sm4Key, data.encryptedData || data)
+          processedData = SafetyUtils.sm4Decrypt(config.__sm4Key, data.encryptedData || data)
         } else {
           // 非预期数据格式直接使用原始数据
           processedData = data

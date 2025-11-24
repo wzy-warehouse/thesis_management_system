@@ -35,4 +35,19 @@ export const Utils = {
       }, delay)
     }
   },
+
+  /**
+   * 格式化文件大小（字节转KB/MB）
+   * @param size 文件大小（字节）
+   * @returns 格式化后的大小字符串
+   */
+  formatFileSize: (size: number): string => {
+    if (size < 1024) {
+      return `${size} B`
+    } else if (size < 1024 * 1024) {
+      return `${(size / 1024).toFixed(1)} KB`
+    } else {
+      return `${(size / (1024 * 1024)).toFixed(1)} MB`
+    }
+  },
 }
