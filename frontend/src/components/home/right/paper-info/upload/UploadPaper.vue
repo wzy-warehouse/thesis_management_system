@@ -21,7 +21,7 @@
           class="cover-upload-btn"
         ></uploader-btn>
         <p>拖拽文件到此处上传，或点击此处上传文件</p>
-        <p class="upload-tips">支持PDF格式，最大支持100MB</p>
+        <p class="upload-tips">支持PDF格式，最大支持10MB</p>
       </uploader-drop>
 
       <!-- 文件上传列表及进度显示 -->

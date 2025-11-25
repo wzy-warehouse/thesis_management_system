@@ -1,5 +1,6 @@
 package com.laboratory.paper.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.laboratory.paper.domain.paper.PaperListItem;
 import com.laboratory.paper.domain.paper.PaperResponse;
 import com.laboratory.paper.domain.paper.PaperResponseData;
@@ -11,13 +12,19 @@ import com.laboratory.paper.mapper.PaperFolderMapper;
 import com.laboratory.paper.mapper.PaperMapper;
 import com.laboratory.paper.mapper.RecycleBinMapper;
 import com.laboratory.paper.service.PaperService;
+import com.laboratory.paper.service.ex.NoLoginException;
 import com.laboratory.paper.service.ex.PaperExistsInRecycleBinException;
+import com.laboratory.paper.utils.DeepSeekApiUtil;
 import com.laboratory.paper.utils.FileUtils;
+import com.laboratory.paper.utils.PdfBoxTextExtractorUtils;
+import com.laboratory.paper.utils.QwenApiUtil;
 import com.laboratory.paper.vo.paper.QueryPaperBaseInfoVo;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -39,6 +46,18 @@ public class IPaperServiceImpl implements PaperService {
     @Value("${file.upload-path}")
     private String fileUploadPath;
 
+    @Value("${deepseek.api.type}")
+    private String type;
+
+    @Value("${deepseek.api.url}")
+    private String url;
+
+    @Value("${deepseek.api.key}")
+    private String key;
+
+    @Value("${deepseek.api.model}")
+    private String model;
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     @Resource
@@ -49,6 +68,24 @@ public class IPaperServiceImpl implements PaperService {
 
     @Resource
     private RecycleBinMapper recycleBinMapper;
+
+    /**
+     * Spring加载完成后调用一次，完成deepseek的初始化
+     * @throws IOException 异常
+     */
+    @PostConstruct
+    public void initDeepSeekUtil() throws IOException {
+        // 初始化静态工具类
+        switch (type) {
+            case "qwen":
+                QwenApiUtil.init(url, key, model);
+                break;
+            case "deepseek":
+            default:
+                DeepSeekApiUtil.init(url, key, model);
+        }
+
+    }
 
     @Override
     public List<PaperListItem> searchPaperList(Long folderId, String keyword) {
@@ -155,6 +192,33 @@ public class IPaperServiceImpl implements PaperService {
             throw new RuntimeException("上传文件出错，" + e.getMessage());
         }
 
+    }
+
+    @Override
+    public Mono<String> chat(Long paperId) {
+        try {
+            // 如果未登录，直接抛出异常
+            if(!StpUtil.isLogin()) throw new NoLoginException();
+
+            // 获取id对应的论文路径
+            Paper paper = paperMapper.queryPaperById(paperId);
+
+            if(paper == null || paper.getFilePath() == null) return Mono.empty();
+
+            // 构建本地路径
+            Path rootPath = Paths.get(fileUploadPath);
+            Path filePath = FileUtils.buildFilePath(rootPath, paper.getFilePath());
+
+            // 读取pdf内容
+            String pdfText = PdfBoxTextExtractorUtils.extractText(filePath);
+
+            return switch (type) {
+                case "qwen" -> QwenApiUtil.extractPaperInfo(pdfText);
+                default -> DeepSeekApiUtil.extractPaperInfo(pdfText);
+            };
+        }catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     /**

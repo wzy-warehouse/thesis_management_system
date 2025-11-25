@@ -24,11 +24,16 @@ public class FileUtils {
             if (path == null || path.isBlank()) {
                 continue;
             }
-            // 拼接
-            result = result.resolve(path);
+
+            // 关键修复：去掉路径开头的 / 或 \，转为相对路径
+            String relativePath = path.replaceAll("^[/\\\\]+", "");
+            // ^[/\\\\]+：正则匹配开头的1个或多个 / 或 \，替换为空
+
+            // 拼接相对路径（此时 resolve 会正常叠加在 root 后面）
+            result = result.resolve(relativePath);
         }
 
-        // 规范化路径
+        // 规范化路径（处理 .. 等相对路径符号，可选但推荐）
         return result.normalize();
     }
 }

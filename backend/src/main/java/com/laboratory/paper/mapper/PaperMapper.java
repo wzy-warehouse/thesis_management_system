@@ -59,4 +59,11 @@ public interface PaperMapper {
      * @param paper 参数
      */
     void insertPaper(Paper paper);
+
+    /**
+     * 按照id查询论文
+     * @param id 论文id
+     * @return 论文
+     */
+    Paper queryPaperById(Long id);
 }

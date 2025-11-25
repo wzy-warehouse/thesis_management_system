@@ -23,7 +23,8 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 "/user/check-login",
                 "/user/check-remember",
                 "/user/auto-login",
-                "/crypto/sm2/public-key"
+                "/crypto/sm2/public-key",
+                "/paper/chat"
         );
     }
 }

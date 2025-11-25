@@ -122,4 +122,15 @@
             now()
         )
     </insert>
+
+    <select id="queryPaperById" resultMap="PaperMap">
+        SELECT
+            id, title, author, publish_time, journal, journal_type, research_direction, innovation, deficiency, file_path,
+            file_size, file_hash, keywords, create_user, create_time, update_time
+        FROM
+            paper
+        <where>
+            id = #{id}
+        </where>
+    </select>
 </mapper>

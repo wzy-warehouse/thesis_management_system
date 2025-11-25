@@ -2,6 +2,7 @@ package com.laboratory.paper.controller;
 
 import com.laboratory.paper.domain.ApiResponse;
 import com.laboratory.paper.service.ex.FilesInRecycleBinException;
+import com.laboratory.paper.service.ex.NoLoginException;
 import com.laboratory.paper.service.ex.ServiceException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -15,6 +16,8 @@ public class BaseController{
     public ApiResponse<Void> handleServiceException(Throwable e) {
         if(e instanceof FilesInRecycleBinException) {
             return ApiResponse.error(409, e.getMessage());
+        }else if(e instanceof NoLoginException) {
+            return ApiResponse.error(401, e.getMessage());
         }else {
             return ApiResponse.error(e.getMessage());
         }

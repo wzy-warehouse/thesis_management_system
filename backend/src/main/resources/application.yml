@@ -34,8 +34,8 @@ spring:
         login-password: admin
   servlet:
     multipart:
-      max-file-size: 100MB  # 单个文件最大大小
-      max-request-size: 500MB  # 单次请求总文件最大大小
+      max-file-size: 10MB  # 单个文件最大大小
+      max-request-size: 200MB  # 单次请求总文件最大大小
       enabled: true  # 启用文件上传支持
 
   # redis
@@ -100,3 +100,11 @@ login:
 # 文件配置
 file:
   upload-path: 'E:/file_system/thesis_management_system'
+
+# deepseek配置
+deepseek:
+  api:
+    type: 'qwen'    # 指定类型，deepseek或者qwen
+    url: '模型对应链接'
+    key: 'API-key'
+    model: '模型名称'

@@ -32,6 +32,19 @@ export const queryPaperBaseInfo = (
 }
 
 /**
+ * 通过AI获取论文信息
+ * @param paperId
+ * @returns
+ */
+export const chat = (paperId: number): Promise<Response<string>> => {
+  return httpInstance.post('/paper/chat', null, {
+    params: {
+      paperId,
+    },
+  })
+}
+
+/**
  * 根据id查询论文
  * @param id
  * @returns

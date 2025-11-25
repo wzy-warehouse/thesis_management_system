@@ -16,6 +16,7 @@ import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -43,6 +44,15 @@ public class PaperController extends BaseController {
                                     @RequestPart("file") MultipartFile file) {
         paperService.upload(paperUploadRequest, file, StpUtil.getLoginIdAsLong());
         return ApiResponse.ok("上传成功", null);
+    }
+
+    @PostMapping("/chat")
+    public Mono<ApiResponse<String>> chat(@RequestParam(value = "paperId") Long paperId) {
+        return paperService.chat(paperId)
+                // 成功：返回200 + success + 大模型响应内容
+                .flatMap(reply -> Mono.just(ApiResponse.ok(reply)))
+                // 异常/失败：返回500 + 错误信息 + 空数据
+                .onErrorReturn(ApiResponse.error(500, "大模型调用失败", null));
     }
 
     @GetMapping("/{id}")

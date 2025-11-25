@@ -9,7 +9,7 @@ import {
 } from './user'
 import type { changePasswordRequest } from '@/types/user/ChangePasswordRequest'
 import type { CreateUserRequest } from '@/types/user/CreateUserRequest'
-import { deleteById, queryById, queryPaperBaseInfo, searchList, update } from './paper'
+import { chat, deleteById, queryById, queryPaperBaseInfo, searchList, update } from './paper'
 import type { PaperUpdateRequest } from '@/types/paper/PaperUpdateRequest'
 import type { FolderCreateRequest } from '@/types/folder/FolderCreateRequest'
 import { addPaper, create as createFolder, deleteFolder, queryFolder, renameFolder } from './folder'
@@ -49,6 +49,9 @@ export const $api = {
     searchList: (folderId: number, keyword: string) => searchList(folderId, keyword),
 
     queryPaperBaseInfo: (paperDatas: QueryPaper) => queryPaperBaseInfo(paperDatas),
+
+    // 根据AI获取论文信息
+    chat: (paperId: number) => chat(paperId),
 
     // 获取论文
     queryById: (id: number) => queryById(id),
