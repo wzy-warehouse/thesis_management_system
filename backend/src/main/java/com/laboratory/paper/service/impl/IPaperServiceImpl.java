@@ -14,6 +14,7 @@ import com.laboratory.paper.mapper.RecycleBinMapper;
 import com.laboratory.paper.service.PaperService;
 import com.laboratory.paper.service.ex.NoLoginException;
 import com.laboratory.paper.service.ex.PaperExistsInRecycleBinException;
+import com.laboratory.paper.service.ex.PapersIsEmptyException;
 import com.laboratory.paper.utils.DeepSeekApiUtil;
 import com.laboratory.paper.utils.FileUtils;
 import com.laboratory.paper.utils.PdfBoxTextExtractorUtils;
@@ -35,10 +36,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class IPaperServiceImpl implements PaperService {
@@ -219,6 +218,38 @@ public class IPaperServiceImpl implements PaperService {
         }catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    @Override
+    public void batchDeletePaper(List<Long> paperIds, Long parentId, Long userId) {
+        // 校验传入的 paperIds 非空
+        if (paperIds == null || paperIds.isEmpty()) {
+            throw new PapersIsEmptyException();
+        }
+
+        // 查询回收站中已存在的记录（paperIds + parentId 联合判断，确保精准匹配）
+        List<RecycleBin> recycleBinsList = recycleBinMapper.queryAllRecycleBinByIdFolderId(paperIds, parentId);
+
+        // 已存在回收站的 paperId + 不在回收站的 paperId
+        List<Long> existPaperIds = new ArrayList<>();
+        // 先收集回收站中已存在的 paperId
+        for (RecycleBin recycleBin : recycleBinsList) {
+            existPaperIds.add(recycleBin.getPaperId());
+        }
+        // 筛选出：原始 paperIds 中 不在 existPaperIds 里的（即需要删除并移入回收站的）
+        List<Long> notExistPaperIds = paperIds.stream()
+                .filter(paperId -> !existPaperIds.contains(paperId))
+                .collect(Collectors.toList());
+
+        // 若没有需要处理的 paperId（全部已在回收站），直接返回，不执行后续操作
+        if (notExistPaperIds.isEmpty()) {
+            return;
+        }
+
+        // 批量从目录中删除
+        paperFolderMapper.batchDeleteByPaperIdFolderId(notExistPaperIds, parentId);
+        // 批量移入回收站
+        recycleBinMapper.batchRemoveToRecycleBin(notExistPaperIds, parentId, userId);
     }
 
     /**

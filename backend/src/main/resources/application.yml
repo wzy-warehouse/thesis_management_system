@@ -105,6 +105,9 @@ file:
 deepseek:
   api:
     type: 'qwen'    # 指定类型，deepseek或者qwen
-    url: '模型对应链接'
-    key: 'API-key'
-    model: '模型名称'
+#    url: 'https://api.deepseek.com'
+#    key: 'sk-81f09f5379744ee28630f245d70a107f'
+#    model: 'deepseek-chat'
+    url: 'https://dashscope.aliyuncs.com/compatible-mode/v1'
+    key: 'sk-6a65b87736214bd3b70558cddce5d026'
+    model: 'qwen3-max'

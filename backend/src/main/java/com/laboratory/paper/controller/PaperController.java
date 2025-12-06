@@ -1,11 +1,8 @@
 package com.laboratory.paper.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.laboratory.paper.domain.paper.PaperListItem;
-import com.laboratory.paper.domain.paper.PaperResponse;
+import com.laboratory.paper.domain.paper.*;
 import com.laboratory.paper.domain.ApiResponse;
-import com.laboratory.paper.domain.paper.PaperResponseData;
-import com.laboratory.paper.domain.paper.PaperUploadRequest;
 import com.laboratory.paper.service.PaperService;
 import com.laboratory.paper.vo.paper.PaperVo;
 import com.laboratory.paper.vo.paper.QueryPaperBaseInfoVo;
@@ -68,6 +65,12 @@ public class PaperController extends BaseController {
     @DeleteMapping("/delete/{id}/{parentId}")
     public ApiResponse<Void> deleteById(@PathVariable String id, @PathVariable String parentId) {
         paperService.deletePaper(Long.parseLong(id), Long.parseLong(parentId), StpUtil.getLoginIdAsLong());
+        return ApiResponse.ok("已移至回收站", null);
+    }
+
+    @DeleteMapping("/batch-delete")
+    public ApiResponse<Void> batchDelete(@RequestBody PaperBatchDeleteRequest paperBatchDeleteRequest) {
+        paperService.batchDeletePaper(paperBatchDeleteRequest.getPaperIds(), paperBatchDeleteRequest.getFolderId(), StpUtil.getLoginIdAsLong());
         return ApiResponse.ok("已移至回收站", null);
     }
 }

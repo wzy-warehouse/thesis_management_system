@@ -58,12 +58,15 @@ const viewDeletePaper = ref<boolean>(false)
 
 const emit = defineEmits<{
   (e: 'update:hasSelection', hasSelection: boolean): void
-  (e: 'delete-paper-success', paperId: number): void
+  (e: 'update:selectedPaperIds', selectedPapers: PaperInfoResponseData[]): void
 }>()
 
 // 监听复选框选中变化
 const handleSelectionChange = (selection: PaperInfoResponseData[]) => {
   const hasSelection = selection.length > 0
+
+  // 给父组件传递选中的论文
+  emit('update:selectedPaperIds', selection)
   emit('update:hasSelection', hasSelection)
 }
 

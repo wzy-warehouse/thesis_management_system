@@ -65,8 +65,24 @@ export const update = (updateData: PaperUpdateRequest): Promise<Response<void>> 
 /**
  * 按照id删除论文
  * @param id
+ * @param folderId
  * @returns
  */
 export const deleteById = (id: number, folderId: number): Promise<Response<void>> => {
   return httpInstance.delete(`/paper/delete/${id}/${folderId}`)
+}
+
+/**
+ * 批量删除论文
+ * @param ids
+ * @param folderId
+ * @returns
+ */
+export const batchDeleteById = (ids: number[], folderId: number): Promise<Response<void>> => {
+  return httpInstance.delete('/paper/batch-delete', {
+    data: {
+      paperIds: ids,
+      folderId,
+    },
+  })
 }

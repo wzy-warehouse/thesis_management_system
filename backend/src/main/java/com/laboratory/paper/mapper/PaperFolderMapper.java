@@ -4,6 +4,8 @@ import com.laboratory.paper.entity.PaperFolder;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper
 public interface PaperFolderMapper {
     /**
@@ -27,4 +29,13 @@ public interface PaperFolderMapper {
      * @param paperFolder 参数
      */
     void insertPaperFolder(PaperFolder paperFolder);
+
+    /**
+     * 批量按照id和目录id删除论文
+     * @param paperIds id
+     * @param folderId 目录id
+     */
+    void batchDeleteByPaperIdFolderId(
+            @Param("paperIds") List<Long> paperIds,
+            @Param("folderId") Long folderId);
 }

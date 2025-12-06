@@ -19,4 +19,6 @@ public interface PaperService {
     void upload(PaperUploadRequest paperUploadRequest, MultipartFile file, Long userId);
 
     Mono<String> chat(Long paperId);
+
+    void batchDeletePaper(List<Long> paperIds, Long parentId, Long userId);
 }

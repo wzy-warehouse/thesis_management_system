@@ -9,7 +9,15 @@ import {
 } from './user'
 import type { changePasswordRequest } from '@/types/user/ChangePasswordRequest'
 import type { CreateUserRequest } from '@/types/user/CreateUserRequest'
-import { chat, deleteById, queryById, queryPaperBaseInfo, searchList, update } from './paper'
+import {
+  batchDeleteById,
+  chat,
+  deleteById,
+  queryById,
+  queryPaperBaseInfo,
+  searchList,
+  update,
+} from './paper'
 import type { PaperUpdateRequest } from '@/types/paper/PaperUpdateRequest'
 import type { FolderCreateRequest } from '@/types/folder/FolderCreateRequest'
 import { addPaper, create as createFolder, deleteFolder, queryFolder, renameFolder } from './folder'
@@ -61,6 +69,9 @@ export const $api = {
 
     // 按照id删除论文
     deleteById: (id: number, folderId: number) => deleteById(id, folderId),
+
+    // 批量删除论文
+    batchDeleteById: (ids: number[], folderId: number) => batchDeleteById(ids, folderId),
   },
 
   // 文件夹模块

@@ -1,13 +1,16 @@
 <template>
   <div class="show-info-bg">
     <div class="navs">
-      <el-button type="danger" :disabled="disabledDeleteBtn">删除选中</el-button>
+      <el-button type="danger" :disabled="disabledDeleteBtn" @click="deleteSelected"
+        >删除选中</el-button
+      >
     </div>
     <div class="table-box">
       <ShowTable
         :table-datas="tableDatas"
         :folder-id="folderId"
         @update:hasSelection="handleHasSelection"
+        @update:selectedPaperIds="updateSelectedPaperIds"
       />
     </div>
     <div class="pages-box">
@@ -19,9 +22,14 @@
 import ShowTable from '@/components/home/right/paper-info/show-info/ShowTable.vue'
 import ShowPage from '@/components/home/right/paper-info/show-info/ShowPage.vue'
 import type { PaperInfoResponseData } from '@/types/paper/PaperInfoResponse.ts'
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { $api } from '@/api/api'
 
-defineProps<{
+// 选中的数据
+const selectedPaperIds = ref<number[]>([])
+
+const props = defineProps<{
   tableDatas: PaperInfoResponseData[]
   folderId: number
 }>()
@@ -31,6 +39,36 @@ const disabledDeleteBtn = ref(true)
 
 const handleHasSelection = (hasSelection: boolean) => {
   disabledDeleteBtn.value = !hasSelection
+}
+
+const deletePaperSuccess = inject<(paperId: number) => void>('delete-paper-success')
+
+// 删除选中
+function deleteSelected() {
+  ElMessageBox.alert('确定要删除选中的论文吗？', '提示', {
+    confirmButtonText: '确定',
+    confirmButtonClass: 'el-button-info',
+  }).then(() => {
+    // 批量删除
+    $api.paper.batchDeleteById(selectedPaperIds.value, props.folderId).then((res) => {
+      if (res.code == 200) {
+        ElMessage.success('删除成功')
+        selectedPaperIds.value.forEach((paperId) => {
+          deletePaperSuccess?.(paperId)
+        })
+      } else {
+        ElMessage.error('删除失败：' + res.message)
+      }
+    })
+  })
+}
+
+// 更新选中数据
+function updateSelectedPaperIds(paper: PaperInfoResponseData[]) {
+  selectedPaperIds.value = []
+  paper.forEach((item) => {
+    selectedPaperIds.value.push(item.id)
+  })
 }
 </script>
 <style scoped>

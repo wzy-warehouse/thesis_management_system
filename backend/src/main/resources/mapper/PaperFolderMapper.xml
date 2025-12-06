@@ -27,4 +27,21 @@
    <insert id="insertPaperFolder">
       INSERT INTO paper_folder(paper_id, folder_id) VALUES(#{paperId}, #{folderId})
    </insert>
+
+   <delete id="batchDeleteByPaperIdFolderId">
+      DELETE FROM paper_folder
+      <where>
+         <if test="paperIds != null and paperIds.size() > 0">
+            paper_id IN
+            <foreach collection="paperIds" item="paperId" open="(" close=")" separator=",">
+               #{paperId}
+            </foreach>
+         </if>
+
+         <if test="paperIds != null and paperIds.size() > 0">
+            AND
+         </if>
+         folder_id = #{folderId}
+      </where>
+   </delete>
 </mapper>
