@@ -96,6 +96,10 @@ login:
     redis:
       key:
         prefix: 'login:remember:'  # 记住密码在redis中前缀
+  captcha:
+    redis:
+      key:
+        prefix: 'login:captcha:'
 
 # 文件配置
 file:

@@ -1,13 +1,14 @@
 package com.laboratory.paper.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.laboratory.paper.domain.ApiResponse;
+import com.laboratory.paper.domain.user.CreateResponse;
+import com.laboratory.paper.domain.user.GenerateCaptchaResponse;
+import com.laboratory.paper.domain.user.LoginResponse;
 import com.laboratory.paper.entity.User;
 import com.laboratory.paper.mapper.UserMapper;
 import com.laboratory.paper.service.UserService;
 import com.laboratory.paper.vo.user.ChangePasswordVo;
-import com.laboratory.paper.domain.user.CreateResponse;
-import com.laboratory.paper.domain.user.LoginResponse;
-import com.laboratory.paper.domain.ApiResponse;
 import com.laboratory.paper.vo.user.UserVo;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -33,6 +34,11 @@ public class UserController extends BaseController{
 
     @Value("${login.remember.redis.key.prefix}")
     private String rememberKeyPrefix;
+
+    @GetMapping("/generate-captcha")
+    private ApiResponse<GenerateCaptchaResponse> generateCaptcha(@RequestParam(value = "width") Integer width) {
+        return ApiResponse.ok(userService.generateCaptcha(width));
+    }
 
     @PostMapping("/login")
     public ApiResponse<LoginResponse> login(@RequestBody @Valid UserVo user) {

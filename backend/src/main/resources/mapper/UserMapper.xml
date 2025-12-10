@@ -15,4 +15,11 @@
             username = #{username}
         </where>
     </select>
+
+    <select id="findById" resultMap="UserMapperMap">
+        SELECT id, username, salt, password, create_time, update_time FROM `user`
+        <where>
+            id = #{id}
+        </where>
+    </select>
 </mapper>

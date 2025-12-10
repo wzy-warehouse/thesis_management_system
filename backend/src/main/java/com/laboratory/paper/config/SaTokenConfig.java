@@ -1,4 +1,4 @@
-package com.laboratory.paper.config;
+package com.basic.template.config;
 
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.stp.StpUtil;
@@ -18,13 +18,14 @@ public class SaTokenConfig implements WebMvcConfigurer {
         }))
         .addPathPatterns("/**") // 拦截所有接口
         .excludePathPatterns(
-                // 匿名访问路径
-                "/user/login",
-                "/user/check-login",
-                "/user/check-remember",
-                "/user/auto-login",
-                "/crypto/sm2/public-key",
-                "/paper/chat"
+            // 匿名访问路径
+            "/user/generate-captcha",
+            "/user/login",
+            "/user/check-login",
+            "/user/check-remember",
+            "/user/auto-login",
+            "/crypto/sm2/public-key",
+            "paper/chart"
         );
     }
 }
